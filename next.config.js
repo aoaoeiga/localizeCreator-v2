@@ -4,13 +4,6 @@ const nextConfig = {
   images: {
     domains: ['avatars.githubusercontent.com'],
   },
-  webpack: (config, { isServer }) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@supabase/supabase-js': '@supabase/supabase-js',
-    };
-    return config;
-  },
 }
 
 module.exports = nextConfig

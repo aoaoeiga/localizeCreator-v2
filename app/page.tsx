@@ -1,114 +1,89 @@
 "use client"
 
-import { useState } from "react"
-import { useSession } from "next-auth/react"
-import { Header } from "@/components/header"
-import { GenerationForm } from "@/components/generation-form"
-import { GenerationResult } from "@/components/generation-result"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { useSession, signIn, signOut } from "next-auth/react"
 import Link from "next/link"
-import { useToast } from "@/hooks/use-toast"
-
-interface GenerationData {
-  translatedText: string
-  hashtags: string[]
-  optimalPostTime: string
-}
 
 export default function Home() {
-  const { data: session } = useSession()
-  const [isLoading, setIsLoading] = useState(false)
-  const [result, setResult] = useState<GenerationData | null>(null)
-  const { toast } = useToast()
-
-  const handleGenerate = async (text: string) => {
-    if (!session) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to generate content",
-        variant: "destructive",
-      })
-      return
-    }
-
-    setIsLoading(true)
-    setResult(null)
-
-    try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ originalText: text }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to generate content")
-      }
-
-      setResult({
-        translatedText: data.data.translatedText,
-        hashtags: data.data.hashtags,
-        optimalPostTime: data.data.optimalPostTime,
-      })
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to generate content",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const { data: session, status } = useSession()
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <header className="border-b">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">LocalizeCreator</h1>
+          <nav className="flex items-center gap-4">
+            {session ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="px-4 py-2 text-gray-600 hover:text-gray-900"
+                >
+                  Dashboard
+                </Link>
+                <span className="text-sm">Hello, {session.user?.name || session.user?.email}</span>
+                <button
+                  onClick={() => signOut()}
+                  className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/auth/signin"
+                className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded"
+              >
+                Sign In
+              </Link>
+            )}
+          </nav>
+        </div>
+      </header>
+
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center space-y-4">
-            <h1 className="text-4xl font-bold">LocalizeCreator</h1>
-            <p className="text-xl text-muted-foreground">
+            <h2 className="text-4xl font-bold">LocalizeCreator</h2>
+            <p className="text-xl text-gray-600">
               Automatically translate and adapt your content for the Japanese market
             </p>
           </div>
 
-          {!session && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Get Started</CardTitle>
-                <CardDescription>
-                  Sign in with GitHub to start localizing your content
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Link href="/auth/signin">
-                  <Button className="w-full">Sign In with GitHub</Button>
-                </Link>
-              </CardContent>
-            </Card>
+          {status === "loading" && (
+            <div className="text-center">
+              <p>Loading...</p>
+            </div>
+          )}
+
+          {status === "unauthenticated" && (
+            <div className="text-center space-y-4">
+              <p className="text-lg">Please sign in to get started</p>
+              <Link
+                href="/auth/signin"
+                className="inline-block px-6 py-3 bg-blue-600 text-white hover:bg-blue-700 rounded"
+              >
+                Sign In with GitHub
+              </Link>
+            </div>
           )}
 
           {session && (
-            <>
-              <GenerationForm onGenerate={handleGenerate} isLoading={isLoading} />
-              {result && (
-                <GenerationResult
-                  translatedText={result.translatedText}
-                  hashtags={result.hashtags}
-                  optimalPostTime={result.optimalPostTime}
-                />
-              )}
-            </>
+            <div className="text-center space-y-4">
+              <p className="text-lg">Welcome! You are signed in.</p>
+              <div className="bg-gray-100 p-4 rounded">
+                <p className="text-sm text-gray-600">Email: {session.user?.email}</p>
+                <p className="text-sm text-gray-600">Name: {session.user?.name || "N/A"}</p>
+              </div>
+              <Link
+                href="/dashboard"
+                className="inline-block px-6 py-3 bg-blue-600 text-white hover:bg-blue-700 rounded"
+              >
+                Go to Dashboard
+              </Link>
+            </div>
           )}
         </div>
       </main>
     </div>
   )
 }
-

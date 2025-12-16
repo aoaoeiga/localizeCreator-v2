@@ -1,35 +1,33 @@
 "use client"
 
 import { signIn } from "next-auth/react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Header } from "@/components/header"
-import { Github } from "lucide-react"
+import { Suspense } from "react"
 
-export default function SignInPage() {
+function SignInForm() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Sign In</CardTitle>
-            <CardDescription>
-              Sign in with your GitHub account to get started
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button
-              className="w-full"
-              onClick={() => signIn("github", { callbackUrl: "/" })}
-            >
-              <Github className="mr-2 h-4 w-4" />
-              Sign In with GitHub
-            </Button>
-          </CardContent>
-        </Card>
-      </main>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
+        <div className="text-center space-y-4">
+          <h1 className="text-3xl font-bold">Sign In</h1>
+          <p className="text-gray-600">
+            Sign in with your GitHub account to get started
+          </p>
+          <button
+            onClick={() => signIn("github", { callbackUrl: "/" })}
+            className="w-full px-4 py-3 bg-gray-900 text-white hover:bg-gray-800 rounded-md font-medium"
+          >
+            Sign In with GitHub
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
 
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <SignInForm />
+    </Suspense>
+  )
+}

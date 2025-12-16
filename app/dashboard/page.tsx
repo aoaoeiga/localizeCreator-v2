@@ -1,98 +1,19 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useSession } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { Header } from "@/components/header"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { useEffect } from "react"
 import Link from "next/link"
-import { GenerationForm } from "@/components/generation-form"
-import { GenerationResult } from "@/components/generation-result"
-import { useToast } from "@/hooks/use-toast"
-
-interface GenerationData {
-  translatedText: string
-  hashtags: string[]
-  optimalPostTime: string
-}
-
-interface UsageData {
-  current: number
-  limit: number
-  remaining: number
-  plan: string
-}
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
-  const [usage, setUsage] = useState<UsageData | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [result, setResult] = useState<GenerationData | null>(null)
-  const { toast } = useToast()
 
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/auth/signin")
     }
   }, [status, router])
-
-  useEffect(() => {
-    if (session) {
-      fetchUsage()
-    }
-  }, [session])
-
-  const fetchUsage = async () => {
-    try {
-      const response = await fetch("/api/usage")
-      if (response.ok) {
-        const data = await response.json()
-        setUsage(data)
-      }
-    } catch (error) {
-      console.error("Failed to fetch usage:", error)
-    }
-  }
-
-  const handleGenerate = async (text: string) => {
-    setIsLoading(true)
-    setResult(null)
-
-    try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ originalText: text }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to generate content")
-      }
-
-      setResult({
-        translatedText: data.data.translatedText,
-        hashtags: data.data.hashtags,
-        optimalPostTime: data.data.optimalPostTime,
-      })
-
-      // Refresh usage after generation
-      await fetchUsage()
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to generate content",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   if (status === "loading") {
     return (
@@ -108,64 +29,72 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <header className="border-b">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="text-2xl font-bold">
+            LocalizeCreator
+          </Link>
+          <nav className="flex items-center gap-4">
+            <Link
+              href="/"
+              className="px-4 py-2 text-gray-600 hover:text-gray-900"
+            >
+              Home
+            </Link>
+            <button
+              onClick={() => signOut()}
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded"
+            >
+              Sign Out
+            </button>
+          </nav>
+        </div>
+      </header>
+
       <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8">
           <div>
             <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-            <p className="text-muted-foreground">
+            <p className="text-gray-600">
               Welcome back, {session.user?.name || session.user?.email}
             </p>
           </div>
 
-          {usage && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Usage Statistics</CardTitle>
-                <CardDescription>Your current usage for this month</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span>Plan:</span>
-                    <span className="font-semibold capitalize">{usage.plan}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>Used:</span>
-                    <span className="font-semibold">
-                      {usage.current} / {usage.limit}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>Remaining:</span>
-                    <span className="font-semibold">{usage.remaining}</span>
-                  </div>
-                  {usage.plan === "free" && (
-                    <div className="pt-4">
-                      <Link href="/pricing">
-                        <Button variant="outline" className="w-full">
-                          Upgrade to Premium
-                        </Button>
-                      </Link>
-                    </div>
-                  )}
+          <div className="bg-white border rounded-lg p-6 space-y-4">
+            <h2 className="text-xl font-semibold">User Information</h2>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Email:</span>
+                <span className="font-medium">{session.user?.email || "N/A"}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Name:</span>
+                <span className="font-medium">{session.user?.name || "N/A"}</span>
+              </div>
+              {session.user?.image && (
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Avatar:</span>
+                  <img
+                    src={session.user.image}
+                    alt="Avatar"
+                    className="w-10 h-10 rounded-full"
+                  />
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              )}
+            </div>
+          </div>
 
-          <GenerationForm onGenerate={handleGenerate} isLoading={isLoading} />
-
-          {result && (
-            <GenerationResult
-              translatedText={result.translatedText}
-              hashtags={result.hashtags}
-              optimalPostTime={result.optimalPostTime}
-            />
-          )}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-2">Phase 1 Complete</h2>
+            <p className="text-gray-700">
+              GitHub OAuth authentication is working successfully!
+            </p>
+            <p className="text-sm text-gray-600 mt-2">
+              Next steps: Add Supabase integration, OpenAI API, and content generation features.
+            </p>
+          </div>
         </div>
       </main>
     </div>
   )
 }
-
