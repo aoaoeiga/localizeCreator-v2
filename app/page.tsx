@@ -1,10 +1,61 @@
 "use client"
 
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useState } from "react"
+import { useSession, signOut } from "next-auth/react"
 import Link from "next/link"
+import { GenerationForm } from "@/components/generation-form"
+import { GenerationResult } from "@/components/generation-result"
+
+interface GenerationData {
+  translatedTitle: string
+  translatedDescription: string
+  hashtags: string[]
+  optimalPostTime: string
+  culturalAdvice: string
+}
 
 export default function Home() {
   const { data: session, status } = useSession()
+  const [isLoading, setIsLoading] = useState(false)
+  const [result, setResult] = useState<GenerationData | null>(null)
+
+  const handleGenerate = async (text: string) => {
+    if (!session) {
+      alert("Please sign in to generate content")
+      return
+    }
+
+    setIsLoading(true)
+    setResult(null)
+
+    try {
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ originalText: text }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to generate content")
+      }
+
+      setResult({
+        translatedTitle: data.data.translatedTitle,
+        translatedDescription: data.data.translatedDescription,
+        hashtags: data.data.hashtags,
+        optimalPostTime: data.data.optimalPostTime,
+        culturalAdvice: data.data.culturalAdvice,
+      })
+    } catch (error: any) {
+      alert(error.message || "Failed to generate content")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -68,19 +119,18 @@ export default function Home() {
           )}
 
           {session && (
-            <div className="text-center space-y-4">
-              <p className="text-lg">Welcome! You are signed in.</p>
-              <div className="bg-gray-100 p-4 rounded">
-                <p className="text-sm text-gray-600">Email: {session.user?.email}</p>
-                <p className="text-sm text-gray-600">Name: {session.user?.name || "N/A"}</p>
-              </div>
-              <Link
-                href="/dashboard"
-                className="inline-block px-6 py-3 bg-blue-600 text-white hover:bg-blue-700 rounded"
-              >
-                Go to Dashboard
-              </Link>
-            </div>
+            <>
+              <GenerationForm onGenerate={handleGenerate} isLoading={isLoading} />
+              {result && (
+                <GenerationResult
+                  translatedTitle={result.translatedTitle}
+                  translatedDescription={result.translatedDescription}
+                  hashtags={result.hashtags}
+                  optimalPostTime={result.optimalPostTime}
+                  culturalAdvice={result.culturalAdvice}
+                />
+              )}
+            </>
           )}
         </div>
       </main>
