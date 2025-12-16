@@ -19,7 +19,11 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<GenerationData | null>(null)
 
-  const handleGenerate = async (text: string) => {
+  const handleGenerate = async (formData: {
+    platform: string
+    contentDescription: string
+    niche: string
+  }) => {
     if (!session) {
       alert("Please sign in to generate content")
       return
@@ -34,21 +38,25 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ originalText: text }),
+        body: JSON.stringify({
+          originalText: formData.contentDescription,
+          platform: formData.platform,
+          niche: formData.niche,
+        }),
       })
 
-      const data = await response.json()
+      const responseData = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to generate content")
+        throw new Error(responseData.error || "Failed to generate content")
       }
 
       setResult({
-        translatedTitle: data.data.translatedTitle,
-        translatedDescription: data.data.translatedDescription,
-        hashtags: data.data.hashtags,
-        optimalPostTime: data.data.optimalPostTime,
-        culturalAdvice: data.data.culturalAdvice,
+        translatedTitle: responseData.data.translatedTitle,
+        translatedDescription: responseData.data.translatedDescription,
+        hashtags: responseData.data.hashtags,
+        optimalPostTime: responseData.data.optimalPostTime,
+        culturalAdvice: responseData.data.culturalAdvice,
       })
     } catch (error: any) {
       alert(error.message || "Failed to generate content")
