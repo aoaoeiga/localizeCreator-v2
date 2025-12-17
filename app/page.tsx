@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useSession, signOut } from "next-auth/react"
 import Link from "next/link"
 import { GenerationForm } from "@/components/generation-form"
@@ -18,11 +18,16 @@ export default function Home() {
   const { data: session, status } = useSession()
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<GenerationData | null>(null)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleGenerate = async (formData: {
     platform: string
-    contentDescription: string
-    niche: string
+    videoUrl: string
+    subtitles: string
   }) => {
     if (!session) {
       alert("Please sign in to generate content")
@@ -39,9 +44,9 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          originalText: formData.contentDescription,
           platform: formData.platform,
-          niche: formData.niche,
+          videoUrl: formData.videoUrl,
+          subtitles: formData.subtitles,
         }),
       })
 
@@ -65,13 +70,44 @@ export default function Home() {
     }
   }
 
+  // Prevent hydration mismatch by not rendering session-dependent content until mounted
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <header className="border-b">
+          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+            <h1 className="text-2xl font-bold">LocalizeCreator</h1>
+            <nav className="flex items-center gap-4">
+              <div className="h-10 w-20 bg-gray-200 animate-pulse rounded"></div>
+            </nav>
+          </div>
+        </header>
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto space-y-8">
+            <div className="text-center space-y-4">
+              <h2 className="text-4xl font-bold">LocalizeCreator</h2>
+              <p className="text-xl text-gray-600">
+                Automatically translate and adapt your content for the Japanese market
+              </p>
+            </div>
+            <div className="text-center">
+              <p>Loading...</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">LocalizeCreator</h1>
           <nav className="flex items-center gap-4">
-            {session ? (
+            {status === "loading" ? (
+              <div className="h-10 w-20 bg-gray-200 animate-pulse rounded"></div>
+            ) : session ? (
               <>
                 <Link
                   href="/dashboard"
@@ -108,13 +144,11 @@ export default function Home() {
             </p>
           </div>
 
-          {status === "loading" && (
+          {status === "loading" ? (
             <div className="text-center">
               <p>Loading...</p>
             </div>
-          )}
-
-          {status === "unauthenticated" && (
+          ) : status === "unauthenticated" ? (
             <div className="text-center space-y-4">
               <p className="text-lg">Please sign in to get started</p>
               <Link
@@ -124,9 +158,7 @@ export default function Home() {
                 Sign In with GitHub
               </Link>
             </div>
-          )}
-
-          {session && (
+          ) : session ? (
             <>
               <GenerationForm onGenerate={handleGenerate} isLoading={isLoading} />
               {result && (
@@ -139,7 +171,7 @@ export default function Home() {
                 />
               )}
             </>
-          )}
+          ) : null}
         </div>
       </main>
     </div>

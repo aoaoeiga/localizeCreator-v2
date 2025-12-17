@@ -8,44 +8,52 @@ import { Input } from "@/components/ui/input"
 interface GenerationFormProps {
   onGenerate: (data: {
     platform: string
-    contentDescription: string
-    niche: string
+    videoUrl: string
+    subtitles: string
   }) => Promise<void>
   isLoading?: boolean
 }
 
 export function GenerationForm({ onGenerate, isLoading = false }: GenerationFormProps) {
   const [platform, setPlatform] = useState("")
-  const [contentDescription, setContentDescription] = useState("")
-  const [niche, setNiche] = useState("")
+  const [videoUrl, setVideoUrl] = useState("")
+  const [subtitles, setSubtitles] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!platform || !contentDescription.trim() || !niche.trim()) {
+    if (!platform || !videoUrl.trim() || !subtitles.trim()) {
       alert("Please fill in all fields")
+      return
+    }
+
+    // Validate URL format
+    try {
+      new URL(videoUrl)
+    } catch {
+      alert("Please enter a valid URL")
       return
     }
 
     try {
       await onGenerate({
         platform,
-        contentDescription,
-        niche,
+        videoUrl,
+        subtitles,
       })
     } catch (error: any) {
       alert(error.message || "Failed to generate content")
     }
   }
 
-  const isFormValid = platform && contentDescription.trim() && niche.trim()
+  const isFormValid = platform && videoUrl.trim() && subtitles.trim()
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Content Localization</CardTitle>
         <CardDescription>
-          Enter your content details to get a Japanese translation with hashtags and optimal posting time
+          Enter your video URL and subtitles to get a Japanese translation with hashtags and optimal posting time
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -69,31 +77,31 @@ export function GenerationForm({ onGenerate, isLoading = false }: GenerationForm
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="content-description" className="text-sm font-medium">
-              Content Description
+            <label htmlFor="video-url" className="text-sm font-medium">
+              Video URL
             </label>
-            <textarea
-              id="content-description"
-              placeholder="Enter your content description here..."
-              value={contentDescription}
-              onChange={(e) => setContentDescription(e.target.value)}
-              rows={6}
+            <Input
+              id="video-url"
+              type="url"
+              placeholder="https://www.youtube.com/watch?v=..."
+              value={videoUrl}
+              onChange={(e) => setVideoUrl(e.target.value)}
               disabled={isLoading}
-              className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="niche" className="text-sm font-medium">
-              Niche/Category
+            <label htmlFor="subtitles" className="text-sm font-medium">
+              Subtitles
             </label>
-            <Input
-              id="niche"
-              type="text"
-              placeholder="e.g., Technology, Fashion, Food, Travel..."
-              value={niche}
-              onChange={(e) => setNiche(e.target.value)}
+            <textarea
+              id="subtitles"
+              placeholder="Paste your video subtitles here..."
+              value={subtitles}
+              onChange={(e) => setSubtitles(e.target.value)}
+              rows={8}
               disabled={isLoading}
+              className="flex min-h-[160px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
 

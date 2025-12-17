@@ -16,25 +16,38 @@ export interface GenerationResult {
   culturalAdvice: string;
 }
 
+export interface GenerateContentParams {
+  subtitles: string;
+  platform: string;
+  videoUrl?: string;
+}
+
 export async function generateLocalizedContent(
-  originalText: string
+  params: GenerateContentParams
 ): Promise<GenerationResult> {
   if (!openai) {
     throw new Error('OpenAI API key is not configured');
   }
 
-  const prompt = `You are a content localization expert specializing in adapting content for the Japanese market. 
+  const { subtitles, platform, videoUrl } = params;
 
-Original content:
-${originalText}
+  const platformName = platform === 'youtube' ? 'YouTube' : platform === 'tiktok' ? 'TikTok' : 'Instagram';
+
+  const prompt = `You are a content localization expert specializing in adapting video content for the Japanese market.
+
+Platform: ${platformName}
+${videoUrl ? `Video URL: ${videoUrl}` : ''}
+
+Subtitles/Transcript:
+${subtitles}
 
 Please provide a comprehensive localization for Japanese audiences. Format your response as JSON with the following structure:
 {
-  "translatedTitle": "Japanese title (catchy and culturally appropriate)",
-  "translatedDescription": "Japanese description (natural and engaging)",
-  "hashtags": ["hashtag1", "hashtag2", ...], // Top 10 relevant hashtags (mix of Japanese and English if appropriate)
-  "optimalPostTime": "Best time to post (e.g., '平日 20:00-22:00 JST')",
-  "culturalAdvice": "Cultural adaptation advice and tips for Japanese audience"
+  "translatedTitle": "Japanese title (catchy and culturally appropriate for ${platformName})",
+  "translatedDescription": "Japanese description (natural and engaging, optimized for ${platformName} format)",
+  "hashtags": ["hashtag1", "hashtag2", ...], // Top 10 relevant hashtags (mix of Japanese and English if appropriate, optimized for ${platformName})
+  "optimalPostTime": "Best time to post on ${platformName} (e.g., '平日 20:00-22:00 JST')",
+  "culturalAdvice": "Cultural adaptation advice and tips for Japanese audience on ${platformName}"
 }`;
 
   try {
@@ -73,4 +86,3 @@ Please provide a comprehensive localization for Japanese audiences. Format your 
     throw new Error('Failed to generate localized content');
   }
 }
-
