@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -18,6 +18,12 @@ export function GenerationForm({ onGenerate, isLoading = false }: GenerationForm
   const [platform, setPlatform] = useState("")
   const [videoUrl, setVideoUrl] = useState("")
   const [subtitles, setSubtitles] = useState("")
+  const [isMounted, setIsMounted] = useState(false)
+
+  // Ensure component is mounted on client side
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -47,6 +53,28 @@ export function GenerationForm({ onGenerate, isLoading = false }: GenerationForm
   }
 
   const isFormValid = platform && videoUrl.trim() && subtitles.trim()
+
+  // Prevent hydration mismatch
+  if (!isMounted) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Content Localization</CardTitle>
+          <CardDescription>
+            Enter your video URL and subtitles to get a Japanese translation with hashtags and optimal posting time
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="h-10 bg-gray-200 animate-pulse rounded"></div>
+            <div className="h-10 bg-gray-200 animate-pulse rounded"></div>
+            <div className="h-40 bg-gray-200 animate-pulse rounded"></div>
+            <div className="h-10 bg-gray-200 animate-pulse rounded"></div>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <Card>

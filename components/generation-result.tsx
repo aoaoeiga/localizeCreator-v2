@@ -3,7 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Copy, Check } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 interface GenerationResultProps {
   translatedTitle: string
@@ -21,8 +21,16 @@ export function GenerationResult({
   culturalAdvice,
 }: GenerationResultProps) {
   const [copied, setCopied] = useState<string | null>(null)
+  const [isMounted, setIsMounted] = useState(false)
+
+  // Ensure component is mounted on client side
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const copyToClipboard = async (text: string, type: string) => {
+    if (!isMounted) return
+    
     try {
       await navigator.clipboard.writeText(text)
       setCopied(type)
@@ -30,6 +38,25 @@ export function GenerationResult({
     } catch (error) {
       alert("Failed to copy to clipboard")
     }
+  }
+
+  // Prevent hydration mismatch
+  if (!isMounted) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <Card key={i}>
+            <CardHeader>
+              <div className="h-6 bg-gray-200 animate-pulse rounded w-1/3"></div>
+              <div className="h-4 bg-gray-200 animate-pulse rounded w-1/2 mt-2"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-20 bg-gray-200 animate-pulse rounded"></div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    )
   }
 
   return (
@@ -146,4 +173,3 @@ export function GenerationResult({
     </div>
   )
 }
-

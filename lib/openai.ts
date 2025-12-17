@@ -81,8 +81,34 @@ Please provide a comprehensive localization for Japanese audiences. Format your 
       optimalPostTime: result.optimalPostTime || '平日 20:00-22:00 JST',
       culturalAdvice: result.culturalAdvice || '',
     };
-  } catch (error) {
-    console.error('OpenAI API error:', error);
-    throw new Error('Failed to generate localized content');
+  } catch (error: any) {
+    console.error('[OpenAI] API error:', {
+      error,
+      message: error.message,
+      status: error.status,
+      code: error.code,
+      type: error.type,
+      subtitlesLength: subtitles.length,
+      platform,
+    });
+
+    // Provide more specific error messages
+    if (error.status === 401) {
+      throw new Error('OpenAI API key is invalid or expired');
+    }
+    
+    if (error.status === 429) {
+      throw new Error('OpenAI rate limit exceeded. Please try again later.');
+    }
+    
+    if (error.status === 500 || error.status === 503) {
+      throw new Error('OpenAI service is temporarily unavailable. Please try again later.');
+    }
+
+    if (error.message?.includes('JSON')) {
+      throw new Error('Failed to parse OpenAI response. The response may be malformed.');
+    }
+
+    throw new Error(error.message || 'Failed to generate localized content');
   }
 }

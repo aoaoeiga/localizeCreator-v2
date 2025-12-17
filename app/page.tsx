@@ -18,11 +18,20 @@ export default function Home() {
   const { data: session, status } = useSession()
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<GenerationData | null>(null)
-  const [mounted, setMounted] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+  const [sessionReady, setSessionReady] = useState(false)
 
+  // Only run on client side
   useEffect(() => {
-    setMounted(true)
+    setIsMounted(true)
   }, [])
+
+  // Handle session state separately
+  useEffect(() => {
+    if (status !== "loading") {
+      setSessionReady(true)
+    }
+  }, [status])
 
   const handleGenerate = async (formData: {
     platform: string
@@ -53,7 +62,7 @@ export default function Home() {
       const responseData = await response.json()
 
       if (!response.ok) {
-        throw new Error(responseData.error || "Failed to generate content")
+        throw new Error(responseData.error || responseData.details || "Failed to generate content")
       }
 
       setResult({
@@ -70,15 +79,15 @@ export default function Home() {
     }
   }
 
-  // Prevent hydration mismatch by not rendering session-dependent content until mounted
-  if (!mounted) {
+  // Render static content during SSR and initial mount
+  if (!isMounted || !sessionReady) {
     return (
       <div className="min-h-screen flex flex-col">
         <header className="border-b">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <h1 className="text-2xl font-bold">LocalizeCreator</h1>
             <nav className="flex items-center gap-4">
-              <div className="h-10 w-20 bg-gray-200 animate-pulse rounded"></div>
+              <div className="h-10 w-24 bg-gray-200 animate-pulse rounded"></div>
             </nav>
           </div>
         </header>
@@ -91,7 +100,7 @@ export default function Home() {
               </p>
             </div>
             <div className="text-center">
-              <p>Loading...</p>
+              <p className="text-gray-500">Loading...</p>
             </div>
           </div>
         </main>
@@ -99,15 +108,19 @@ export default function Home() {
     )
   }
 
+  // Now we can safely use session data
+  const isAuthenticated = !!session
+  const isLoadingSession = status === "loading"
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">LocalizeCreator</h1>
           <nav className="flex items-center gap-4">
-            {status === "loading" ? (
-              <div className="h-10 w-20 bg-gray-200 animate-pulse rounded"></div>
-            ) : session ? (
+            {isLoadingSession ? (
+              <div className="h-10 w-24 bg-gray-200 animate-pulse rounded"></div>
+            ) : isAuthenticated ? (
               <>
                 <Link
                   href="/dashboard"
@@ -115,7 +128,9 @@ export default function Home() {
                 >
                   Dashboard
                 </Link>
-                <span className="text-sm">Hello, {session.user?.name || session.user?.email}</span>
+                <span className="text-sm">
+                  Hello, {session?.user?.name || session?.user?.email || "User"}
+                </span>
                 <button
                   onClick={() => signOut()}
                   className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded"
@@ -144,11 +159,11 @@ export default function Home() {
             </p>
           </div>
 
-          {status === "loading" ? (
+          {isLoadingSession ? (
             <div className="text-center">
-              <p>Loading...</p>
+              <p className="text-gray-500">Loading session...</p>
             </div>
-          ) : status === "unauthenticated" ? (
+          ) : !isAuthenticated ? (
             <div className="text-center space-y-4">
               <p className="text-lg">Please sign in to get started</p>
               <Link
@@ -158,7 +173,7 @@ export default function Home() {
                 Sign In with GitHub
               </Link>
             </div>
-          ) : session ? (
+          ) : (
             <>
               <GenerationForm onGenerate={handleGenerate} isLoading={isLoading} />
               {result && (
@@ -171,7 +186,7 @@ export default function Home() {
                 />
               )}
             </>
-          ) : null}
+          )}
         </div>
       </main>
     </div>
