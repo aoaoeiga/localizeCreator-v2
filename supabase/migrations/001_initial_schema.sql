@@ -29,3 +29,4 @@ CREATE TABLE IF NOT EXISTS generations (
 CREATE INDEX IF NOT EXISTS idx_generations_user_id ON generations(user_id);
 CREATE INDEX IF NOT EXISTS idx_generations_created_at ON generations(created_at);
 
+
