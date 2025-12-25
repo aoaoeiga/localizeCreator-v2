@@ -94,7 +94,7 @@ export default function Home() {
         <main className="flex-1 container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto space-y-8">
             <div className="text-center space-y-4">
-              <h2 className="text-4xl font-bold">LocalizeCreator</h2>
+              <h1 className="text-4xl font-bold">LocalizeCreator</h1>
               <p className="text-xl text-gray-600">
                 Automatically translate and adapt your content for the Japanese market
               </p>
@@ -153,7 +153,7 @@ export default function Home() {
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center space-y-4">
-            <h2 className="text-4xl font-bold">LocalizeCreator</h2>
+            <h1 className="text-4xl font-bold">LocalizeCreator</h1>
             <p className="text-xl text-gray-600">
               Automatically translate and adapt your content for the Japanese market
             </p>
