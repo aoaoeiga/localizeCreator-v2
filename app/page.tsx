@@ -6,12 +6,18 @@ import Link from "next/link"
 import { GenerationForm } from "@/components/generation-form"
 import { GenerationResult } from "@/components/generation-result"
 
+interface TranscriptLine {
+  en: string
+  ja: string
+}
+
 interface GenerationData {
   translatedTitle: string
   translatedDescription: string
   hashtags: string[]
   optimalPostTime: string
   culturalAdvice: string
+  transcript?: TranscriptLine[]
 }
 
 export default function Home() {
@@ -36,7 +42,6 @@ export default function Home() {
   const handleGenerate = async (formData: {
     platform: string
     videoUrl: string
-    subtitles: string
   }) => {
     if (!session) {
       alert("Please sign in to generate content")
@@ -55,7 +60,6 @@ export default function Home() {
         body: JSON.stringify({
           platform: formData.platform,
           videoUrl: formData.videoUrl,
-          subtitles: formData.subtitles,
         }),
       })
 
@@ -71,6 +75,7 @@ export default function Home() {
         hashtags: responseData.data.hashtags,
         optimalPostTime: responseData.data.optimalPostTime,
         culturalAdvice: responseData.data.culturalAdvice,
+        transcript: responseData.data.transcript,
       })
     } catch (error: any) {
       alert(error.message || "Failed to generate content")
@@ -183,6 +188,7 @@ export default function Home() {
                   hashtags={result.hashtags}
                   optimalPostTime={result.optimalPostTime}
                   culturalAdvice={result.culturalAdvice}
+                  transcript={result.transcript}
                 />
               )}
             </>

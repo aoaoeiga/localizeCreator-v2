@@ -5,12 +5,18 @@ import { Button } from "@/components/ui/button"
 import { Copy, Check } from "lucide-react"
 import { useState, useEffect } from "react"
 
+interface TranscriptLine {
+  en: string
+  ja: string
+}
+
 interface GenerationResultProps {
   translatedTitle: string
   translatedDescription: string
   hashtags: string[]
   optimalPostTime: string
   culturalAdvice: string
+  transcript?: TranscriptLine[]
 }
 
 export function GenerationResult({
@@ -19,6 +25,7 @@ export function GenerationResult({
   hashtags,
   optimalPostTime,
   culturalAdvice,
+  transcript,
 }: GenerationResultProps) {
   const [copied, setCopied] = useState<string | null>(null)
   const [isMounted, setIsMounted] = useState(false)
@@ -44,7 +51,7 @@ export function GenerationResult({
   if (!isMounted) {
     return (
       <div className="space-y-4">
-        {[1, 2, 3, 4, 5].map((i) => (
+        {[1, 2, 3, 4, 5, 6].map((i) => (
           <Card key={i}>
             <CardHeader>
               <div className="h-6 bg-gray-200 animate-pulse rounded w-1/3"></div>
@@ -61,6 +68,51 @@ export function GenerationResult({
 
   return (
     <div className="space-y-4">
+      {transcript && transcript.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Transcript (English / Japanese)</CardTitle>
+            <CardDescription>Bilingual transcript with line-by-line translation</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3 mb-4">
+              {transcript.map((line, index) => (
+                <div key={index} className="border-b border-gray-200 pb-3 last:border-0">
+                  <p className="text-sm text-gray-600 mb-1">
+                    <span className="font-semibold">EN:</span> {line.en}
+                  </p>
+                  <p className="text-sm text-gray-900">
+                    <span className="font-semibold">JA:</span> {line.ja}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const transcriptText = transcript
+                  .map((line) => `EN: ${line.en}\nJA: ${line.ja}`)
+                  .join("\n\n")
+                copyToClipboard(transcriptText, "transcript")
+              }}
+            >
+              {copied === "transcript" ? (
+                <>
+                  <Check className="mr-2 h-4 w-4" />
+                  Copied
+                </>
+              ) : (
+                <>
+                  <Copy className="mr-2 h-4 w-4" />
+                  Copy Transcript
+                </>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>Japanese Title</CardTitle>

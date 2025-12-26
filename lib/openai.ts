@@ -8,12 +8,18 @@ if (!apiKey) {
 
 export const openai = apiKey ? new OpenAI({ apiKey }) : null;
 
+export interface TranscriptLine {
+  en: string;
+  ja: string;
+}
+
 export interface GenerationResult {
   translatedTitle: string;
   translatedDescription: string;
   hashtags: string[];
   optimalPostTime: string;
   culturalAdvice: string;
+  transcript?: TranscriptLine[];
 }
 
 export interface GenerateContentParams {
@@ -47,7 +53,12 @@ Please provide a comprehensive localization for Japanese audiences. Format your 
   "translatedDescription": "Japanese description (natural and engaging, optimized for ${platformName} format)",
   "hashtags": ["hashtag1", "hashtag2", ...], // Top 10 relevant hashtags (mix of Japanese and English if appropriate, optimized for ${platformName})
   "optimalPostTime": "Best time to post on ${platformName} (e.g., '平日 20:00-22:00 JST')",
-  "culturalAdvice": "Cultural adaptation advice and tips for Japanese audience on ${platformName}"
+  "culturalAdvice": "Cultural adaptation advice and tips for Japanese audience on ${platformName}",
+  "transcript": [
+    {"en": "English line 1", "ja": "Japanese translation line 1"},
+    {"en": "English line 2", "ja": "Japanese translation line 2"},
+    ...
+  ] // Line-by-line bilingual transcript. Split the original subtitles into meaningful lines (sentences or phrases) and provide both English and Japanese for each line.
 }`;
 
   try {
@@ -72,7 +83,7 @@ Please provide a comprehensive localization for Japanese audiences. Format your 
       throw new Error('No response from OpenAI');
     }
 
-    const result = JSON.parse(content) as GenerationResult;
+    const result = JSON.parse(content) as any;
     
     return {
       translatedTitle: result.translatedTitle || '',
@@ -80,6 +91,7 @@ Please provide a comprehensive localization for Japanese audiences. Format your 
       hashtags: Array.isArray(result.hashtags) ? result.hashtags.slice(0, 10) : [],
       optimalPostTime: result.optimalPostTime || '平日 20:00-22:00 JST',
       culturalAdvice: result.culturalAdvice || '',
+      transcript: Array.isArray(result.transcript) ? result.transcript : undefined,
     };
   } catch (error: any) {
     console.error('[OpenAI] API error:', {
