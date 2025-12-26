@@ -26,7 +26,6 @@ export default function Home() {
   const [result, setResult] = useState<GenerationData | null>(null)
   const [isMounted, setIsMounted] = useState(false)
 
-  // Set mounted state on client side only
   useEffect(() => {
     setIsMounted(true)
   }, [])
@@ -76,16 +75,13 @@ export default function Home() {
     }
   }
 
-  // Always render the same structure - only dynamic content changes based on isMounted
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">LocalizeCreator</h1>
           <nav className="flex items-center gap-4">
-            {!isMounted ? (
-              <div className="h-10 w-24 bg-gray-200 animate-pulse rounded"></div>
-            ) : status === "loading" ? (
+            {!isMounted || status === "loading" ? (
               <div className="h-10 w-24 bg-gray-200 animate-pulse rounded"></div>
             ) : session ? (
               <>
@@ -126,13 +122,9 @@ export default function Home() {
             </p>
           </div>
 
-          {!isMounted ? (
+          {!isMounted || status === "loading" ? (
             <div className="text-center">
               <p className="text-gray-500">Loading...</p>
-            </div>
-          ) : status === "loading" ? (
-            <div className="text-center">
-              <p className="text-gray-500">Loading session...</p>
             </div>
           ) : !session ? (
             <div className="text-center space-y-4">
@@ -164,3 +156,4 @@ export default function Home() {
     </div>
   )
 }
+
