@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { getYouTubeTranscript } from "@/lib/youtube"
 
 interface GenerationFormProps {
   onGenerate: (data: {
@@ -19,11 +20,54 @@ export function GenerationForm({ onGenerate, isLoading = false }: GenerationForm
   const [videoUrl, setVideoUrl] = useState("")
   const [subtitles, setSubtitles] = useState("")
   const [isMounted, setIsMounted] = useState(false)
+  const [isLoadingTranscript, setIsLoadingTranscript] = useState(false)
+  const [transcriptError, setTranscriptError] = useState<string | null>(null)
 
   // Ensure component is mounted on client side
   useEffect(() => {
     setIsMounted(true)
   }, [])
+
+  // Fetch YouTube transcript when URL changes and platform is YouTube
+  const fetchTranscript = useCallback(async (url: string) => {
+    if (!url.trim() || platform !== "youtube") {
+      return
+    }
+
+    // Validate URL format
+    try {
+      new URL(url)
+    } catch {
+      return
+    }
+
+    setIsLoadingTranscript(true)
+    setTranscriptError(null)
+
+    try {
+      const transcript = await getYouTubeTranscript(url)
+      setSubtitles(transcript)
+    } catch (error: any) {
+      console.error("Error fetching transcript:", error)
+      setTranscriptError(error.message || "Failed to fetch transcript")
+      // Don't clear subtitles if there's an error - user might have entered them manually
+    } finally {
+      setIsLoadingTranscript(false)
+    }
+  }, [platform])
+
+  // Handle URL change with debounce
+  useEffect(() => {
+    if (!isMounted || !videoUrl.trim() || platform !== "youtube") {
+      return
+    }
+
+    const timer = setTimeout(() => {
+      fetchTranscript(videoUrl)
+    }, 1000) // 1 second debounce
+
+    return () => clearTimeout(timer)
+  }, [videoUrl, platform, isMounted, fetchTranscript])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -81,7 +125,10 @@ export function GenerationForm({ onGenerate, isLoading = false }: GenerationForm
       <CardHeader>
         <CardTitle>Content Localization</CardTitle>
         <CardDescription>
-          Enter your video URL and subtitles to get a Japanese translation with hashtags and optimal posting time
+          {platform === "youtube" 
+            ? "Enter a YouTube URL to automatically fetch subtitles, or paste them manually"
+            : "Enter your video URL and subtitles to get a Japanese translation with hashtags and optimal posting time"
+          }
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -93,7 +140,14 @@ export function GenerationForm({ onGenerate, isLoading = false }: GenerationForm
             <select
               id="platform"
               value={platform}
-              onChange={(e) => setPlatform(e.target.value)}
+              onChange={(e) => {
+                setPlatform(e.target.value)
+                // Clear subtitles when platform changes
+                if (e.target.value !== "youtube") {
+                  setSubtitles("")
+                  setTranscriptError(null)
+                }
+              }}
               disabled={isLoading}
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
@@ -116,24 +170,42 @@ export function GenerationForm({ onGenerate, isLoading = false }: GenerationForm
               onChange={(e) => setVideoUrl(e.target.value)}
               disabled={isLoading}
             />
+            {platform === "youtube" && isLoadingTranscript && (
+              <p className="text-sm text-blue-600">Loading transcript...</p>
+            )}
+            {transcriptError && (
+              <p className="text-sm text-red-600">{transcriptError}</p>
+            )}
           </div>
 
           <div className="space-y-2">
             <label htmlFor="subtitles" className="text-sm font-medium">
               Subtitles
+              {platform === "youtube" && (
+                <span className="text-xs text-gray-500 ml-2">
+                  (Auto-filled for YouTube videos)
+                </span>
+              )}
             </label>
             <textarea
               id="subtitles"
-              placeholder="Paste your video subtitles here..."
+              placeholder={
+                platform === "youtube"
+                  ? "Subtitles will be automatically filled when you enter a YouTube URL..."
+                  : "Paste your video subtitles here..."
+              }
               value={subtitles}
-              onChange={(e) => setSubtitles(e.target.value)}
+              onChange={(e) => {
+                setSubtitles(e.target.value)
+                setTranscriptError(null) // Clear error when user manually edits
+              }}
               rows={8}
-              disabled={isLoading}
+              disabled={isLoading || isLoadingTranscript}
               className="flex min-h-[160px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
 
-          <Button type="submit" disabled={isLoading || !isFormValid}>
+          <Button type="submit" disabled={isLoading || isLoadingTranscript || !isFormValid}>
             {isLoading ? "Generating..." : "Generate Localized Content"}
           </Button>
         </form>
