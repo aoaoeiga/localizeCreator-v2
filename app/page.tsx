@@ -25,19 +25,11 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<GenerationData | null>(null)
   const [isMounted, setIsMounted] = useState(false)
-  const [sessionReady, setSessionReady] = useState(false)
 
-  // Only run on client side
+  // Set mounted state on client side only
   useEffect(() => {
     setIsMounted(true)
   }, [])
-
-  // Handle session state separately
-  useEffect(() => {
-    if (status !== "loading") {
-      setSessionReady(true)
-    }
-  }, [status])
 
   const handleGenerate = async (formData: {
     platform: string
@@ -84,48 +76,18 @@ export default function Home() {
     }
   }
 
-  // Render static content during SSR and initial mount
-  if (!isMounted || !sessionReady) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <header className="border-b">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <h1 className="text-2xl font-bold">LocalizeCreator</h1>
-            <nav className="flex items-center gap-4">
-              <div className="h-10 w-24 bg-gray-200 animate-pulse rounded"></div>
-            </nav>
-          </div>
-        </header>
-        <main className="flex-1 container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto space-y-8">
-            <div className="text-center space-y-4">
-              <h1 className="text-4xl font-bold">LocalizeCreator</h1>
-              <p className="text-xl text-gray-600">
-                Automatically translate and adapt your content for the Japanese market
-              </p>
-            </div>
-            <div className="text-center">
-              <p className="text-gray-500">Loading...</p>
-            </div>
-          </div>
-        </main>
-      </div>
-    )
-  }
-
-  // Now we can safely use session data
-  const isAuthenticated = !!session
-  const isLoadingSession = status === "loading"
-
+  // Always render the same structure - only dynamic content changes based on isMounted
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">LocalizeCreator</h1>
           <nav className="flex items-center gap-4">
-            {isLoadingSession ? (
+            {!isMounted ? (
               <div className="h-10 w-24 bg-gray-200 animate-pulse rounded"></div>
-            ) : isAuthenticated ? (
+            ) : status === "loading" ? (
+              <div className="h-10 w-24 bg-gray-200 animate-pulse rounded"></div>
+            ) : session ? (
               <>
                 <Link
                   href="/dashboard"
@@ -164,11 +126,15 @@ export default function Home() {
             </p>
           </div>
 
-          {isLoadingSession ? (
+          {!isMounted ? (
+            <div className="text-center">
+              <p className="text-gray-500">Loading...</p>
+            </div>
+          ) : status === "loading" ? (
             <div className="text-center">
               <p className="text-gray-500">Loading session...</p>
             </div>
-          ) : !isAuthenticated ? (
+          ) : !session ? (
             <div className="text-center space-y-4">
               <p className="text-lg">Please sign in to get started</p>
               <Link
