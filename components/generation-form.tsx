@@ -9,6 +9,7 @@ interface GenerationFormProps {
   onGenerate: (data: {
     platform: string
     videoUrl: string
+    subtitles: string
   }) => Promise<void>
   isLoading?: boolean
 }
@@ -16,6 +17,7 @@ interface GenerationFormProps {
 export function GenerationForm({ onGenerate, isLoading = false }: GenerationFormProps) {
   const [platform, setPlatform] = useState("tiktok")
   const [videoUrl, setVideoUrl] = useState("")
+  const [subtitles, setSubtitles] = useState("")
   const [isMounted, setIsMounted] = useState(false)
 
   // Ensure component is mounted on client side
@@ -26,7 +28,7 @@ export function GenerationForm({ onGenerate, isLoading = false }: GenerationForm
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!platform || !videoUrl.trim()) {
+    if (!platform || !videoUrl.trim() || !subtitles.trim()) {
       alert("Please fill in all fields")
       return
     }
@@ -43,13 +45,14 @@ export function GenerationForm({ onGenerate, isLoading = false }: GenerationForm
       await onGenerate({
         platform,
         videoUrl,
+        subtitles,
       })
     } catch (error: any) {
       alert(error.message || "Failed to generate content")
     }
   }
 
-  const isFormValid = platform && videoUrl.trim()
+  const isFormValid = platform && videoUrl.trim() && subtitles.trim()
 
   // Prevent hydration mismatch
   if (!isMounted) {
@@ -58,13 +61,14 @@ export function GenerationForm({ onGenerate, isLoading = false }: GenerationForm
         <CardHeader>
           <CardTitle>Content Localization</CardTitle>
           <CardDescription>
-            Enter your video URL to get a Japanese translation with hashtags and optimal posting time
+            Enter your video URL and subtitles to get a Japanese translation with hashtags and optimal posting time
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="h-10 bg-gray-200 animate-pulse rounded"></div>
             <div className="h-10 bg-gray-200 animate-pulse rounded"></div>
+            <div className="h-40 bg-gray-200 animate-pulse rounded"></div>
             <div className="h-10 bg-gray-200 animate-pulse rounded"></div>
           </div>
         </CardContent>
@@ -77,7 +81,7 @@ export function GenerationForm({ onGenerate, isLoading = false }: GenerationForm
       <CardHeader>
         <CardTitle>Content Localization</CardTitle>
         <CardDescription>
-          Enter your video URL to automatically generate localized content for the Japanese market
+          Enter your video URL and subtitles to automatically generate localized content for the Japanese market
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -111,6 +115,26 @@ export function GenerationForm({ onGenerate, isLoading = false }: GenerationForm
               onChange={(e) => setVideoUrl(e.target.value)}
               disabled={isLoading}
             />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="subtitles" className="text-sm font-medium">
+              Subtitles
+            </label>
+            <textarea
+              id="subtitles"
+              placeholder={`Line 1: This is a great video
+Line 2: About Japanese culture
+Line 3: Very interesting content`}
+              value={subtitles}
+              onChange={(e) => setSubtitles(e.target.value)}
+              rows={8}
+              disabled={isLoading}
+              className="flex min-h-[160px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            />
+            <p className="text-xs text-gray-500">
+              Enter subtitles line by line. Each line can include descriptions or explanations.
+            </p>
           </div>
 
           <Button type="submit" disabled={isLoading || !isFormValid}>

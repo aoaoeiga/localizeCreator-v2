@@ -3,7 +3,6 @@ import { getServerSession } from 'next-auth/next';
 import { generateLocalizedContent } from '@/lib/openai';
 import { createServerClient } from '@/lib/supabase';
 import { authOptions } from '@/lib/auth-options';
-import { getYouTubeTranscript } from '@/lib/youtube';
 
 // Extract video ID from YouTube URL
 function extractYouTubeVideoId(url: string): string | null {
@@ -114,7 +113,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { platform, videoUrl } = requestBody;
+    const { platform, videoUrl, subtitles } = requestBody;
 
     // Validate platform
     if (!platform) {
@@ -176,6 +175,52 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate subtitles
+    if (!subtitles) {
+      console.error('[Generate API] Missing subtitles');
+      return NextResponse.json(
+        { 
+          error: 'Subtitles are required',
+          details: 'Please provide subtitle text'
+        },
+        { status: 400 }
+      );
+    }
+
+    if (typeof subtitles !== 'string') {
+      console.error('[Generate API] Invalid subtitles type:', typeof subtitles);
+      return NextResponse.json(
+        { 
+          error: 'Invalid subtitles type',
+          details: 'Subtitles must be a string'
+        },
+        { status: 400 }
+      );
+    }
+
+    const trimmedSubtitles = subtitles.trim();
+    if (trimmedSubtitles.length === 0) {
+      console.error('[Generate API] Empty subtitles');
+      return NextResponse.json(
+        { 
+          error: 'Subtitles cannot be empty',
+          details: 'Please provide non-empty subtitle text'
+        },
+        { status: 400 }
+      );
+    }
+
+    if (trimmedSubtitles.length > 50000) {
+      console.error('[Generate API] Subtitles too long:', trimmedSubtitles.length);
+      return NextResponse.json(
+        { 
+          error: 'Subtitles too long',
+          details: `Subtitles must be less than 50,000 characters. Current length: ${trimmedSubtitles.length}`
+        },
+        { status: 400 }
+      );
+    }
+
     // Extract video information based on platform
     let videoId: string | null = null;
     try {
@@ -191,60 +236,11 @@ export async function POST(request: NextRequest) {
       // Continue even if extraction fails - it's not critical
     }
 
-    // Fetch subtitles automatically
-    let subtitles = '';
-    try {
-      if (platform === 'youtube') {
-        // For YouTube, try to fetch transcript automatically
-        try {
-          subtitles = await getYouTubeTranscript(videoUrl);
-        } catch (transcriptError: any) {
-          console.error('[Generate API] Failed to fetch YouTube transcript:', transcriptError);
-          return NextResponse.json(
-            { 
-              error: 'Failed to fetch video transcript',
-              details: transcriptError.message || 'Could not retrieve subtitles for this video. Please ensure the video has captions enabled.'
-            },
-            { status: 400 }
-          );
-        }
-      } else {
-        // For TikTok and Instagram, we would need their APIs or manual input
-        // For now, return an error asking for manual subtitle input
-        return NextResponse.json(
-          { 
-            error: 'Automatic transcript not available',
-            details: `Automatic transcript fetching is currently only available for YouTube videos. For ${platform === 'tiktok' ? 'TikTok' : 'Instagram'}, please provide subtitles manually.`
-          },
-          { status: 400 }
-        );
-      }
-    } catch (subtitleError: any) {
-      console.error('[Generate API] Error fetching subtitles:', subtitleError);
-      return NextResponse.json(
-        { 
-          error: 'Failed to fetch subtitles',
-          details: subtitleError.message || 'An error occurred while fetching video subtitles'
-        },
-        { status: 500 }
-      );
-    }
-
-    if (!subtitles || subtitles.trim().length === 0) {
-      return NextResponse.json(
-        { 
-          error: 'No subtitles found',
-          details: 'The video does not have any available subtitles'
-        },
-        { status: 400 }
-      );
-    }
-
-    // Generate content using OpenAI
+    // Generate content using OpenAI (includes line-by-line translation)
     let result;
     try {
       result = await generateLocalizedContent({
-        subtitles: subtitles.trim(),
+        subtitles: trimmedSubtitles,
         platform,
         videoUrl,
       });
@@ -254,7 +250,7 @@ export async function POST(request: NextRequest) {
         message: openaiError.message,
         stack: openaiError.stack,
         platform,
-        subtitlesLength: subtitles.length,
+        subtitlesLength: trimmedSubtitles.length,
       });
       
       // Provide more specific error messages
@@ -295,7 +291,7 @@ export async function POST(request: NextRequest) {
         .from('generations')
         .insert({
           user_id: userId,
-          original_text: subtitles.trim(),
+          original_text: trimmedSubtitles,
           translated_title: result.translatedTitle,
           translated_description: result.translatedDescription,
           hashtags: result.hashtags,

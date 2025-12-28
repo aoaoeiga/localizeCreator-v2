@@ -33,6 +33,7 @@ export default function Home() {
   const handleGenerate = async (formData: {
     platform: string
     videoUrl: string
+    subtitles: string
   }) => {
     if (!session) {
       alert("Please sign in to generate content")
@@ -51,6 +52,7 @@ export default function Home() {
         body: JSON.stringify({
           platform: formData.platform,
           videoUrl: formData.videoUrl,
+          subtitles: formData.subtitles,
         }),
       })
 
@@ -156,4 +158,3 @@ export default function Home() {
     </div>
   )
 }
-
