@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const userId = (session.user as any).id;
+    const userId = (session.user as any).id || session.user.email;
 
     if (!userId) {
       console.error('[Generate API] User ID not found in session:', session.user);
@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
           error: 'User ID not found',
           details: 'User session is invalid. Please sign in again.'
         },
-        { status: 400 }
+        { status: 401 }
       );
     }
 
