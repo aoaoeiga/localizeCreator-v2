@@ -1,9 +1,13 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Noto_Sans_JP } from "next/font/google"
 import "./globals.css"
 import { Providers } from "./providers"
 
-const inter = Inter({ subsets: ["latin"] })
+const notoSansJP = Noto_Sans_JP({ 
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700", "900"],
+  variable: "--font-noto-sans-jp",
+})
 
 export const metadata: Metadata = {
   title: "LocalizeCreator - Japanese Content Localization",
@@ -16,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="ja" className="dark">
+      <body className={`${notoSansJP.variable} font-sans`}>
         <Providers>
           {children}
         </Providers>

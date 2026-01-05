@@ -63,14 +63,14 @@ function ResultContent() {
 
   if (!isMounted || !result) {
     return (
-      <div className="min-h-screen flex flex-col">
-        <header className="border-b">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <h1 className="text-2xl font-bold">LocalizeCreator</h1>
+      <div className="min-h-screen flex flex-col bg-[#0f1419]">
+        <header className="glass border-b border-white/10">
+          <div className="container mx-auto px-4 py-6 flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-white">LocalizeCreator</h1>
             <nav className="flex items-center gap-4">
               <Link
                 href="/"
-                className="px-4 py-2 text-gray-600 hover:text-gray-900"
+                className="px-4 py-2 glass-button rounded-lg text-white hover:text-accent-red transition-colors"
               >
                 Back
               </Link>
@@ -80,7 +80,7 @@ function ResultContent() {
         <main className="flex-1 container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             <div className="text-center">
-              <p className="text-gray-500">Loading...</p>
+              <p className="text-white/60">Loading...</p>
             </div>
           </div>
         </main>
@@ -89,14 +89,14 @@ function ResultContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">LocalizeCreator</h1>
+    <div className="min-h-screen flex flex-col bg-[#0f1419]">
+      <header className="glass border-b border-white/10">
+        <div className="container mx-auto px-4 py-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">LocalizeCreator</h1>
           <nav className="flex items-center gap-4">
             <Link
               href="/"
-              className="px-4 py-2 text-gray-600 hover:text-gray-900"
+              className="px-4 py-2 glass-button rounded-lg text-white hover:text-accent-red transition-colors"
             >
               Back
             </Link>
@@ -104,43 +104,43 @@ function ResultContent() {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto space-y-8">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <Button
               variant="outline"
               onClick={() => router.push("/")}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 glass-button text-white border-white/20 hover:border-white/40"
             >
               <ArrowLeft className="h-4 w-4" />
               Back
             </Button>
-            <h1 className="text-3xl font-bold">Generation Result</h1>
+            <h1 className="text-3xl font-bold text-white">Generation Result</h1>
           </div>
 
           {result.transcript && result.transcript.length > 0 && (
-            <Card>
+            <Card className="glass-card">
               <CardHeader>
-                <CardTitle>Transcript (English / Japanese)</CardTitle>
-                <CardDescription>Bilingual transcript with line-by-line translation</CardDescription>
+                <CardTitle className="text-white">Transcript (English / Japanese)</CardTitle>
+                <CardDescription className="text-white/60">Bilingual transcript with line-by-line translation</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {result.transcript.map((line, index) => (
-                    <div key={index} className="border-b border-gray-200 pb-4 last:border-0">
-                      <div className="space-y-2">
-                        <p className="text-sm text-gray-600">
-                          <span className="font-semibold">EN:</span> {line.en}
+                    <div key={index} className="border-b border-white/10 pb-6 last:border-0">
+                      <div className="space-y-3">
+                        <p className="text-sm text-white/70">
+                          <span className="font-semibold text-white">EN:</span> {line.en}
                         </p>
-                        <div className="flex items-center justify-between">
-                          <p className="text-sm text-gray-900 flex-1">
-                            <span className="font-semibold">JA:</span> {line.ja}
+                        <div className="flex items-center justify-between gap-4">
+                          <p className="text-sm text-white flex-1">
+                            <span className="font-semibold accent-red">JA:</span> {line.ja}
                           </p>
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => copyToClipboard(line.ja, index)}
-                            className="ml-4 shrink-0"
+                            className="shrink-0 glass-button text-white border-white/20 hover:border-white/40"
                           >
                             {copiedIndex === index ? (
                               <>
@@ -163,37 +163,37 @@ function ResultContent() {
             </Card>
           )}
 
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
-              <CardTitle>Japanese Title</CardTitle>
-              <CardDescription>Localized title for Japanese audience</CardDescription>
+              <CardTitle className="text-white">Japanese Title</CardTitle>
+              <CardDescription className="text-white/60">Localized title for Japanese audience</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-lg font-semibold">{result.translatedTitle}</p>
+              <p className="text-lg font-semibold text-white">{result.translatedTitle}</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
-              <CardTitle>Japanese Description</CardTitle>
-              <CardDescription>Localized description for Japanese audience</CardDescription>
+              <CardTitle className="text-white">Japanese Description</CardTitle>
+              <CardDescription className="text-white/60">Localized description for Japanese audience</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-lg whitespace-pre-wrap">{result.translatedDescription}</p>
+              <p className="text-lg whitespace-pre-wrap text-white/90 leading-relaxed">{result.translatedDescription}</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
-              <CardTitle>Hashtags</CardTitle>
-              <CardDescription>Top 10 suggested hashtags for your post</CardDescription>
+              <CardTitle className="text-white">Hashtags</CardTitle>
+              <CardDescription className="text-white/60">Top 10 suggested hashtags for your post</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 {result.hashtags.map((tag, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-secondary text-secondary-foreground rounded-md text-sm"
+                    className="px-4 py-2 glass-button rounded-lg text-white text-sm font-medium"
                   >
                     #{tag}
                   </span>
@@ -202,23 +202,23 @@ function ResultContent() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
-              <CardTitle>Optimal Posting Time</CardTitle>
-              <CardDescription>Best time to post for maximum engagement</CardDescription>
+              <CardTitle className="text-white">Optimal Posting Time</CardTitle>
+              <CardDescription className="text-white/60">Best time to post for maximum engagement</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-lg">{result.optimalPostTime}</p>
+              <p className="text-lg text-white">{result.optimalPostTime}</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
-              <CardTitle>Cultural Adaptation Advice</CardTitle>
-              <CardDescription>Tips for engaging Japanese audiences</CardDescription>
+              <CardTitle className="text-white">Cultural Adaptation Advice</CardTitle>
+              <CardDescription className="text-white/60">Tips for engaging Japanese audiences</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm whitespace-pre-wrap">{result.culturalAdvice}</p>
+              <p className="text-sm whitespace-pre-wrap text-white/80 leading-relaxed">{result.culturalAdvice}</p>
             </CardContent>
           </Card>
         </div>
@@ -230,14 +230,14 @@ function ResultContent() {
 export default function ResultPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex flex-col">
-        <header className="border-b">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <h1 className="text-2xl font-bold">LocalizeCreator</h1>
+      <div className="min-h-screen flex flex-col bg-[#0f1419]">
+        <header className="glass border-b border-white/10">
+          <div className="container mx-auto px-4 py-6 flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-white">LocalizeCreator</h1>
             <nav className="flex items-center gap-4">
               <Link
                 href="/"
-                className="px-4 py-2 text-gray-600 hover:text-gray-900"
+                className="px-4 py-2 glass-button rounded-lg text-white hover:text-accent-red transition-colors"
               >
                 Back
               </Link>
@@ -247,7 +247,7 @@ export default function ResultPage() {
         <main className="flex-1 container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             <div className="text-center">
-              <p className="text-gray-500">Loading...</p>
+              <p className="text-white/60">Loading...</p>
             </div>
           </div>
         </main>

@@ -14,27 +14,27 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold" suppressHydrationWarning>LocalizeCreator</h1>
-          <nav className="flex items-center gap-4">
+    <div className="min-h-screen flex flex-col bg-[#0f1419]">
+      <header className="glass border-b border-white/10">
+        <div className="container mx-auto px-4 py-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white" suppressHydrationWarning>LocalizeCreator</h1>
+          <nav className="flex items-center gap-6">
             {!isMounted || status === "loading" ? (
-              <div className="h-10 w-24 bg-gray-200 animate-pulse rounded"></div>
+              <div className="h-10 w-24 glass animate-pulse rounded-lg"></div>
             ) : session ? (
               <>
                 <Link
                   href="/dashboard"
-                  className="px-4 py-2 text-gray-600 hover:text-gray-900"
+                  className="px-4 py-2 glass-button rounded-lg text-white hover:text-accent-red transition-colors"
                 >
                   Dashboard
                 </Link>
-                <span className="text-sm">
+                <span className="text-sm text-white/80">
                   Hello, {session?.user?.name || session?.user?.email || "User"}
                 </span>
                 <button
                   onClick={() => signOut()}
-                  className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded"
+                  className="px-4 py-2 glass-button rounded-lg text-white hover:text-accent-red transition-colors"
                 >
                   Sign Out
                 </button>
@@ -42,7 +42,7 @@ export default function Home() {
             ) : (
               <Link
                 href="/auth/signin"
-                className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded"
+                className="px-4 py-2 glass-button rounded-lg text-white hover:text-accent-red transition-colors"
               >
                 Sign In
               </Link>
@@ -51,25 +51,25 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="text-center space-y-4">
-            <h1 className="text-4xl font-bold" suppressHydrationWarning>LocalizeCreator</h1>
-            <p className="text-xl text-gray-600">
+      <main className="flex-1 container mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto space-y-12">
+          <div className="text-center space-y-6">
+            <h1 className="text-5xl font-bold text-white" suppressHydrationWarning>LocalizeCreator</h1>
+            <p className="text-xl text-white/80 leading-relaxed">
               Automatically translate and adapt your content for the Japanese market
             </p>
           </div>
 
           {!isMounted || status === "loading" ? (
             <div className="text-center">
-              <p className="text-gray-500">Loading...</p>
+              <p className="text-white/60">Loading...</p>
             </div>
           ) : !session ? (
-            <div className="text-center space-y-4">
-              <p className="text-lg">Please sign in to get started</p>
+            <div className="text-center space-y-6">
+              <p className="text-lg text-white/80">Please sign in to get started</p>
               <Link
                 href="/auth/signin"
-                className="inline-block px-6 py-3 bg-blue-600 text-white hover:bg-blue-700 rounded"
+                className="inline-block px-8 py-3 glass-button rounded-lg text-white hover:text-accent-red transition-colors"
               >
                 Sign In with GitHub
               </Link>
