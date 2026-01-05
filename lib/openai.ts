@@ -47,18 +47,29 @@ ${videoUrl ? `Video URL: ${videoUrl}` : ''}
 Subtitles/Transcript:
 ${subtitles}
 
+IMPORTANT TRANSLATION STYLE:
+1. Transcript translations: Translate ALL subtitle lines to Kansai dialect (関西弁). 
+   Example: English "This is very interesting" → 関西弁 "これすごい面白いわ〜"
+   Use authentic Kansai dialect expressions like: 〜やで、〜やねん、〜わ、〜へん、ええ、〜したら、〜やったら、etc.
+
+2. All other outputs: Use casual, friendly Japanese WITHOUT honorifics (敬語なし). 
+   Write like talking to a close friend. Use casual forms like: 〜だよ、〜だね、〜する、〜するよ、etc.
+   - Title: Casual and natural
+   - Description: Friendly, no honorifics
+   - Cultural advice: Use Kansai-style casual expressions like "〜がええで" or "〜やったら受けるで"
+
 Please provide a comprehensive localization for Japanese audiences. Format your response as JSON with the following structure:
 {
-  "translatedTitle": "Japanese title (catchy and culturally appropriate for ${platformName})",
-  "translatedDescription": "Japanese description (natural and engaging, optimized for ${platformName} format)",
-  "hashtags": ["hashtag1", "hashtag2", ...], // Top 10 relevant hashtags (mix of Japanese and English if appropriate, optimized for ${platformName})
-  "optimalPostTime": "Best time to post on ${platformName} (e.g., '平日 20:00-22:00 JST')",
-  "culturalAdvice": "Cultural adaptation advice and tips for Japanese audience on ${platformName}",
+  "translatedTitle": "Casual Japanese title (no honorifics, friendly tone, catchy and culturally appropriate for ${platformName})",
+  "translatedDescription": "Casual Japanese description (no honorifics, friendly like talking to a friend, optimized for ${platformName} format)",
+  "hashtags": ["hashtag1", "hashtag2", ...], // Top 10 relevant hashtags in Japanese (optimized for ${platformName})
+  "optimalPostTime": "Best time to post on ${platformName} in casual Japanese (e.g., '平日の20時から22時がおすすめ' or '平日20時〜22時がええで')",
+  "culturalAdvice": "Cultural adaptation advice in casual Japanese with Kansai-style expressions (no honorifics, friendly tone like '〜がええで' or '〜やったら受けるで')",
   "transcript": [
-    {"en": "English line 1", "ja": "Japanese translation line 1"},
-    {"en": "English line 2", "ja": "Japanese translation line 2"},
+    {"en": "English line 1", "ja": "Kansai dialect translation line 1"},
+    {"en": "English line 2", "ja": "Kansai dialect translation line 2"},
     ...
-  ] // Line-by-line bilingual transcript. Split the original subtitles into meaningful lines (sentences or phrases) and provide both English and Japanese for each line.
+  ] // Line-by-line bilingual transcript. Split the original subtitles into meaningful lines (sentences or phrases). Translate ALL Japanese lines to Kansai dialect (関西弁).
 }`;
 
   try {
@@ -67,7 +78,7 @@ Please provide a comprehensive localization for Japanese audiences. Format your 
       messages: [
         {
           role: 'system',
-          content: 'You are a professional content localization expert for the Japanese market. Always respond with valid JSON only, no additional text.',
+          content: 'You are a professional content localization expert for the Japanese market. Translate subtitles to Kansai dialect (関西弁). Make all other outputs casual, friendly Japanese without honorifics (敬語なし), like talking to a close friend. Always respond with valid JSON only, no additional text.',
         },
         {
           role: 'user',
