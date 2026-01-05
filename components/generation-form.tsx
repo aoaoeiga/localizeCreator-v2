@@ -125,13 +125,13 @@ export function GenerationForm() {
   }
 
   return (
-    <Card className="glass-card">
-      <CardHeader>
-        <CardTitle className="text-white text-2xl">Content Localization</CardTitle>
-        <CardDescription className="text-white/70 leading-relaxed">
-          Enter your video URL and subtitles to automatically generate localized content for the Japanese market
-        </CardDescription>
-      </CardHeader>
+      <Card className="glass-card">
+        <CardHeader>
+          <CardTitle className="text-white text-3xl font-['Noto_Sans_JP'] accent-konpeki" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 900 }}>Content Localization</CardTitle>
+          <CardDescription className="text-white/70 leading-relaxed font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>
+            Enter your video URL and subtitles to automatically generate localized content for the Japanese market
+          </CardDescription>
+        </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-3">

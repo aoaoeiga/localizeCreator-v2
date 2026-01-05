@@ -92,7 +92,7 @@ function ResultContent() {
     <div className="min-h-screen flex flex-col bg-[#0f1419]">
       <header className="glass border-b border-white/10">
         <div className="container mx-auto px-4 py-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white">LocalizeCreator</h1>
+          <h1 className="text-2xl font-bold text-white font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 900 }}>LocalizeCreator</h1>
           <nav className="flex items-center gap-4">
             <Link
               href="/"
@@ -115,7 +115,7 @@ function ResultContent() {
               <ArrowLeft className="h-4 w-4" />
               Back
             </Button>
-            <h1 className="text-3xl font-bold text-white">Generation Result</h1>
+            <h1 className="text-4xl font-bold text-white font-['Noto_Sans_JP'] accent-konpeki" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 900 }}>Generation Result</h1>
           </div>
 
           {result.transcript && result.transcript.length > 0 && (
@@ -133,8 +133,8 @@ function ResultContent() {
                           <span className="font-semibold text-white">EN:</span> {line.en}
                         </p>
                         <div className="flex items-center justify-between gap-4">
-                          <p className="text-sm text-white flex-1">
-                            <span className="font-semibold accent-red">JA:</span> {line.ja}
+                          <p className="text-sm text-white flex-1 font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>
+                            <span className="font-semibold accent-shu">JA:</span> {line.ja}
                           </p>
                           <Button
                             variant="outline"
@@ -165,35 +165,36 @@ function ResultContent() {
 
           <Card className="glass-card">
             <CardHeader>
-              <CardTitle className="text-white">Japanese Title</CardTitle>
-              <CardDescription className="text-white/60">Localized title for Japanese audience</CardDescription>
+              <CardTitle className="text-white font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 700 }}>Japanese Title</CardTitle>
+              <CardDescription className="text-white/60 font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>Localized title for Japanese audience</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-lg font-semibold text-white">{result.translatedTitle}</p>
+              <p className="text-lg font-semibold text-white font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>{result.translatedTitle}</p>
             </CardContent>
           </Card>
 
           <Card className="glass-card">
             <CardHeader>
-              <CardTitle className="text-white">Japanese Description</CardTitle>
-              <CardDescription className="text-white/60">Localized description for Japanese audience</CardDescription>
+              <CardTitle className="text-white font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 700 }}>Japanese Description</CardTitle>
+              <CardDescription className="text-white/60 font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>Localized description for Japanese audience</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-lg whitespace-pre-wrap text-white/90 leading-relaxed">{result.translatedDescription}</p>
+              <p className="text-lg whitespace-pre-wrap text-white/90 leading-relaxed font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>{result.translatedDescription}</p>
             </CardContent>
           </Card>
 
           <Card className="glass-card">
             <CardHeader>
-              <CardTitle className="text-white">Hashtags</CardTitle>
-              <CardDescription className="text-white/60">Top 10 suggested hashtags for your post</CardDescription>
+              <CardTitle className="text-white font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 700 }}>Hashtags</CardTitle>
+              <CardDescription className="text-white/60 font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>Top 10 suggested hashtags for your post</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-3">
                 {result.hashtags.map((tag, index) => (
                   <span
                     key={index}
-                    className="px-4 py-2 glass-button rounded-lg text-white text-sm font-medium"
+                    className="px-4 py-2 glass-button rounded-lg text-white text-sm font-medium font-['Noto_Sans_JP']"
+                    style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
                   >
                     #{tag}
                   </span>
@@ -204,21 +205,21 @@ function ResultContent() {
 
           <Card className="glass-card">
             <CardHeader>
-              <CardTitle className="text-white">Optimal Posting Time</CardTitle>
-              <CardDescription className="text-white/60">Best time to post for maximum engagement</CardDescription>
+              <CardTitle className="text-white font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 700 }}>Optimal Posting Time</CardTitle>
+              <CardDescription className="text-white/60 font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>Best time to post for maximum engagement</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-lg text-white">{result.optimalPostTime}</p>
+              <p className="text-lg text-white font-['Noto_Sans_JP'] accent-konpeki" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>{result.optimalPostTime}</p>
             </CardContent>
           </Card>
 
           <Card className="glass-card">
             <CardHeader>
-              <CardTitle className="text-white">Cultural Adaptation Advice</CardTitle>
-              <CardDescription className="text-white/60">Tips for engaging Japanese audiences</CardDescription>
+              <CardTitle className="text-white font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 700 }}>Cultural Adaptation Advice</CardTitle>
+              <CardDescription className="text-white/60 font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>Tips for engaging Japanese audiences</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm whitespace-pre-wrap text-white/80 leading-relaxed">{result.culturalAdvice}</p>
+              <p className="text-sm whitespace-pre-wrap text-white/80 leading-relaxed font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>{result.culturalAdvice}</p>
             </CardContent>
           </Card>
         </div>

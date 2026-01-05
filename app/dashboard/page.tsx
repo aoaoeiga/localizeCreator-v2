@@ -31,7 +31,7 @@ export default function DashboardPage() {
     <div className="min-h-screen flex flex-col bg-[#0f1419]">
       <header className="glass border-b border-white/10">
         <div className="container mx-auto px-4 py-6 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold text-white">
+          <Link href="/" className="text-2xl font-bold text-white font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 900 }}>
             LocalizeCreator
           </Link>
           <nav className="flex items-center gap-6">
@@ -53,9 +53,9 @@ export default function DashboardPage() {
 
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto space-y-8">
-          <div className="space-y-3">
-            <h1 className="text-4xl font-bold text-white">Dashboard</h1>
-            <p className="text-white/70 text-lg">
+          <div className="space-y-4">
+            <h1 className="text-5xl font-bold text-white font-['Noto_Sans_JP'] accent-konpeki" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 900 }}>Dashboard</h1>
+            <p className="text-white/70 text-lg font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>
               Welcome back, {session.user?.name || session.user?.email}
             </p>
           </div>

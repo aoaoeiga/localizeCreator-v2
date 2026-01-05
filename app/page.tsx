@@ -17,7 +17,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-[#0f1419]">
       <header className="glass border-b border-white/10">
         <div className="container mx-auto px-4 py-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white" suppressHydrationWarning>LocalizeCreator</h1>
+          <h1 className="text-2xl font-bold text-white font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 900 }} suppressHydrationWarning>LocalizeCreator</h1>
           <nav className="flex items-center gap-6">
             {!isMounted || status === "loading" ? (
               <div className="h-10 w-24 glass animate-pulse rounded-lg"></div>
@@ -53,11 +53,15 @@ export default function Home() {
 
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto space-y-12">
-          <div className="text-center space-y-6">
-            <h1 className="text-5xl font-bold text-white" suppressHydrationWarning>LocalizeCreator</h1>
-            <p className="text-xl text-white/80 leading-relaxed">
-              Automatically translate and adapt your content for the Japanese market
-            </p>
+          <div className="text-center space-y-8">
+            <div className="space-y-4">
+              <h1 className="text-6xl font-bold text-white font-['Noto_Sans_JP'] gold-glow-subtle" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 900 }} suppressHydrationWarning>
+                LocalizeCreator
+              </h1>
+              <p className="text-xl text-white/80 leading-relaxed font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>
+                Automatically translate and adapt your content for the Japanese market
+              </p>
+            </div>
           </div>
 
           {!isMounted || status === "loading" ? (
