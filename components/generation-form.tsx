@@ -17,6 +17,7 @@ export function GenerationForm() {
   const router = useRouter()
   const { data: session } = useSession()
   const [platform, setPlatform] = useState("tiktok")
+  const [dialect, setDialect] = useState("kansai")
   const [videoUrl, setVideoUrl] = useState("")
   const [subtitleLines, setSubtitleLines] = useState<SubtitleLine[]>([{ id: 1, text: "" }])
   const [isMounted, setIsMounted] = useState(false)
@@ -55,7 +56,7 @@ export function GenerationForm() {
     
     const subtitles = subtitleLines.filter(line => line.text.trim()).map(line => line.text).join("\n")
     
-    if (!platform || !videoUrl.trim() || !subtitles.trim()) {
+    if (!platform || !dialect || !videoUrl.trim() || !subtitles.trim()) {
       alert("Please fill in all fields")
       return
     }
@@ -76,11 +77,12 @@ export function GenerationForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          platform,
-          videoUrl,
-          subtitles,
-        }),
+            body: JSON.stringify({
+              platform,
+              dialect,
+              videoUrl,
+              subtitles,
+            }),
       })
 
       const responseData = await response.json()
@@ -100,7 +102,7 @@ export function GenerationForm() {
   }
 
   const subtitles = subtitleLines.filter(line => line.text.trim()).map(line => line.text).join("\n")
-  const isFormValid = platform && videoUrl.trim() && subtitles.trim()
+  const isFormValid = platform && dialect && videoUrl.trim() && subtitles.trim()
 
   // Prevent hydration mismatch
   if (!isMounted) {
@@ -148,6 +150,22 @@ export function GenerationForm() {
               <option value="youtube" className="bg-[#0a0a0a]">YouTube</option>
               <option value="tiktok" className="bg-[#0a0a0a]">TikTok</option>
               <option value="instagram" className="bg-[#0a0a0a]">Instagram</option>
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="dialect" className="text-sm font-medium text-white">
+              Language Dialect
+            </label>
+            <select
+              id="dialect"
+              value={dialect}
+              onChange={(e) => setDialect(e.target.value)}
+              disabled={isLoading}
+              className="flex h-10 w-full rounded glass-input px-3 py-2 text-sm text-white bg-[#0a0a0a] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <option value="standard" className="bg-[#0a0a0a]">Standard Japanese</option>
+              <option value="kansai" className="bg-[#0a0a0a]">Kansai Dialect</option>
             </select>
           </div>
 

@@ -25,6 +25,7 @@ export interface GenerationResult {
 export interface GenerateContentParams {
   subtitles: string;
   platform: string;
+  dialect?: string;
   videoUrl?: string;
 }
 
@@ -35,28 +36,35 @@ export async function generateLocalizedContent(
     throw new Error('OpenAI API key is not configured');
   }
 
-  const { subtitles, platform, videoUrl } = params;
+  const { subtitles, platform, dialect = 'kansai', videoUrl } = params;
 
   const platformName = platform === 'youtube' ? 'YouTube' : platform === 'tiktok' ? 'TikTok' : 'Instagram';
+  const isKansai = dialect === 'kansai';
+
+  const transcriptStyle = isKansai 
+    ? 'Translate ALL subtitle lines to Kansai dialect (関西弁). Example: English "This is very interesting" → 関西弁 "これすごい面白いわ〜". Use authentic Kansai dialect expressions like: 〜やで、〜やねん、〜わ、〜へん、ええ、〜したら、〜やったら、etc.'
+    : 'Translate ALL subtitle lines to casual Standard Japanese WITHOUT honorifics (敬語なし). Use casual forms like: 〜だよ、〜だね、〜する、〜するよ、etc.';
+
+  const otherOutputsStyle = isKansai
+    ? 'Use casual, friendly Japanese WITHOUT honorifics (敬語なし). Write like talking to a close friend. Use casual forms like: 〜だよ、〜だね、〜する、〜するよ、etc. You can also use Kansai-style casual expressions.'
+    : 'Use casual, friendly Standard Japanese WITHOUT honorifics (敬語なし). Write like talking to a close friend. Use casual forms like: 〜だよ、〜だね、〜する、〜するよ、etc.';
 
   const prompt = `You are a content localization expert specializing in adapting video content for the Japanese market.
 
 Platform: ${platformName}
+Dialect: ${isKansai ? 'Kansai Dialect (関西弁)' : 'Standard Japanese (標準語)'}
 ${videoUrl ? `Video URL: ${videoUrl}` : ''}
 
 Subtitles/Transcript:
 ${subtitles}
 
 IMPORTANT TRANSLATION STYLE:
-1. Transcript translations: Translate ALL subtitle lines to Kansai dialect (関西弁). 
-   Example: English "This is very interesting" → 関西弁 "これすごい面白いわ〜"
-   Use authentic Kansai dialect expressions like: 〜やで、〜やねん、〜わ、〜へん、ええ、〜したら、〜やったら、etc.
+1. Transcript translations: ${transcriptStyle}
 
-2. All other outputs: Use casual, friendly Japanese WITHOUT honorifics (敬語なし). 
-   Write like talking to a close friend. Use casual forms like: 〜だよ、〜だね、〜する、〜するよ、etc.
+2. All other outputs: ${otherOutputsStyle}
    - Title: Casual and natural
    - Description: Friendly, no honorifics
-   - Cultural advice: Use Kansai-style casual expressions like "〜がええで" or "〜やったら受けるで"
+   - Cultural advice: ALWAYS write in English (e.g., "It's great to post on Wednesday evening when Japanese audiences are most active.")
 
 Please provide a comprehensive localization for Japanese audiences. Format your response as JSON with the following structure:
 {
@@ -64,12 +72,12 @@ Please provide a comprehensive localization for Japanese audiences. Format your 
   "translatedDescription": "Casual Japanese description (no honorifics, friendly like talking to a friend, optimized for ${platformName} format)",
   "hashtags": ["hashtag1", "hashtag2", ...], // Top 10 relevant hashtags in Japanese (optimized for ${platformName})
   "optimalPostTime": "Best time to post on ${platformName} in time range format (e.g., '7:00 PM - 9:00 PM JST' or '8:00 PM - 10:00 PM JST')",
-  "culturalAdvice": "Cultural adaptation advice in casual Japanese with Kansai-style expressions (no honorifics, friendly tone like '〜がええで' or '〜やったら受けるで')",
+  "culturalAdvice": "Cultural adaptation advice in English (e.g., 'It's great to post on Wednesday evening when Japanese audiences are most active.')",
   "transcript": [
-    {"en": "English line 1", "ja": "Kansai dialect translation line 1"},
-    {"en": "English line 2", "ja": "Kansai dialect translation line 2"},
+    {"en": "English line 1", "ja": "${isKansai ? 'Kansai dialect' : 'Casual Standard Japanese'} translation line 1"},
+    {"en": "English line 2", "ja": "${isKansai ? 'Kansai dialect' : 'Casual Standard Japanese'} translation line 2"},
     ...
-  ] // Line-by-line bilingual transcript. Split the original subtitles into meaningful lines (sentences or phrases). Translate ALL Japanese lines to Kansai dialect (関西弁).
+  ] // Line-by-line bilingual transcript. Split the original subtitles into meaningful lines (sentences or phrases). Translate ALL Japanese lines to ${isKansai ? 'Kansai dialect (関西弁)' : 'casual Standard Japanese (敬語なし)'}.
 }`;
 
   try {
@@ -78,7 +86,7 @@ Please provide a comprehensive localization for Japanese audiences. Format your 
       messages: [
         {
           role: 'system',
-          content: 'You are a professional content localization expert for the Japanese market. Translate subtitles to Kansai dialect (関西弁). Make all other outputs casual, friendly Japanese without honorifics (敬語なし), like talking to a close friend. Always respond with valid JSON only, no additional text.',
+          content: `You are a professional content localization expert for the Japanese market. Translate subtitles based on the selected dialect (${isKansai ? 'Kansai dialect' : 'Standard Japanese'}). Make all other outputs casual, friendly Japanese without honorifics (敬語なし), like talking to a close friend. Cultural advice must ALWAYS be in English. Always respond with valid JSON only, no additional text.`,
         },
         {
           role: 'user',

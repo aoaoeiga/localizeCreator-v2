@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { platform, videoUrl, subtitles } = requestBody;
+    const { platform, dialect, videoUrl, subtitles } = requestBody;
 
     // Validate platform
     if (!platform) {
@@ -133,6 +133,19 @@ export async function POST(request: NextRequest) {
         { 
           error: 'Invalid platform',
           details: `Platform must be one of: youtube, tiktok, instagram. Received: ${platform}`
+        },
+        { status: 400 }
+      );
+    }
+
+    // Validate dialect
+    const validDialect = dialect || 'kansai'; // Default to kansai if not provided
+    if (validDialect && !['standard', 'kansai'].includes(validDialect)) {
+      console.error('[Generate API] Invalid dialect:', validDialect);
+      return NextResponse.json(
+        { 
+          error: 'Invalid dialect',
+          details: `Dialect must be one of: standard, kansai. Received: ${validDialect}`
         },
         { status: 400 }
       );
@@ -242,6 +255,7 @@ export async function POST(request: NextRequest) {
       result = await generateLocalizedContent({
         subtitles: trimmedSubtitles,
         platform,
+        dialect: validDialect,
         videoUrl,
       });
     } catch (openaiError: any) {
