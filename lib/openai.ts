@@ -63,7 +63,7 @@ Please provide a comprehensive localization for Japanese audiences. Format your 
   "translatedTitle": "Casual Japanese title (no honorifics, friendly tone, catchy and culturally appropriate for ${platformName})",
   "translatedDescription": "Casual Japanese description (no honorifics, friendly like talking to a friend, optimized for ${platformName} format)",
   "hashtags": ["hashtag1", "hashtag2", ...], // Top 10 relevant hashtags in Japanese (optimized for ${platformName})
-  "optimalPostTime": "Best time to post on ${platformName} in casual Japanese (e.g., '平日の20時から22時がおすすめ' or '平日20時〜22時がええで')",
+  "optimalPostTime": "Best time to post on ${platformName} in time range format (e.g., '7:00 PM - 9:00 PM JST' or '8:00 PM - 10:00 PM JST')",
   "culturalAdvice": "Cultural adaptation advice in casual Japanese with Kansai-style expressions (no honorifics, friendly tone like '〜がええで' or '〜やったら受けるで')",
   "transcript": [
     {"en": "English line 1", "ja": "Kansai dialect translation line 1"},
