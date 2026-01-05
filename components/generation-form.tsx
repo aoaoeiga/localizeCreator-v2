@@ -107,17 +107,17 @@ export function GenerationForm() {
     return (
       <Card className="glass-card">
         <CardHeader>
-          <CardTitle className="text-white">Content Localization</CardTitle>
+          <CardTitle className="text-white text-xl">Content Localization</CardTitle>
           <CardDescription className="text-white/60">
             Enter your video URL and subtitles to get a Japanese translation with hashtags and optimal posting time
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="h-10 glass animate-pulse rounded-lg"></div>
-            <div className="h-10 glass animate-pulse rounded-lg"></div>
-            <div className="h-40 glass animate-pulse rounded-lg"></div>
-            <div className="h-10 glass animate-pulse rounded-lg"></div>
+            <div className="h-10 bg-white/5 animate-pulse rounded"></div>
+            <div className="h-10 bg-white/5 animate-pulse rounded"></div>
+            <div className="h-40 bg-white/5 animate-pulse rounded"></div>
+            <div className="h-10 bg-white/5 animate-pulse rounded"></div>
           </div>
         </CardContent>
       </Card>
@@ -125,16 +125,16 @@ export function GenerationForm() {
   }
 
   return (
-      <Card className="glass-card">
-        <CardHeader>
-          <CardTitle className="text-white text-3xl font-['Noto_Sans_JP'] accent-konpeki" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 900 }}>Content Localization</CardTitle>
-          <CardDescription className="text-white/70 leading-relaxed font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>
-            Enter your video URL and subtitles to automatically generate localized content for the Japanese market
-          </CardDescription>
-        </CardHeader>
+    <Card className="glass-card">
+      <CardHeader>
+        <CardTitle className="text-white text-2xl">Content Localization</CardTitle>
+        <CardDescription className="text-white/60">
+          Enter your video URL and subtitles to automatically generate localized content for the Japanese market
+        </CardDescription>
+      </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-3">
+          <div className="space-y-2">
             <label htmlFor="platform" className="text-sm font-medium text-white">
               Platform
             </label>
@@ -143,15 +143,15 @@ export function GenerationForm() {
               value={platform}
               onChange={(e) => setPlatform(e.target.value)}
               disabled={isLoading}
-              className="flex h-12 w-full rounded-lg glass-input px-4 py-2 text-sm text-white placeholder:text-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-red/50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-10 w-full rounded glass-input px-3 py-2 text-sm text-white bg-[#0a0a0a] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <option value="youtube" className="bg-[#0f1419]">YouTube</option>
-              <option value="tiktok" className="bg-[#0f1419]">TikTok</option>
-              <option value="instagram" className="bg-[#0f1419]">Instagram</option>
+              <option value="youtube" className="bg-[#0a0a0a]">YouTube</option>
+              <option value="tiktok" className="bg-[#0a0a0a]">TikTok</option>
+              <option value="instagram" className="bg-[#0a0a0a]">Instagram</option>
             </select>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             <label htmlFor="video-url" className="text-sm font-medium text-white">
               Video URL
             </label>
@@ -166,15 +166,15 @@ export function GenerationForm() {
             />
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             <label className="text-sm font-medium text-white">
               Subtitles
             </label>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {subtitleLines.map((line, index) => (
-                <div key={line.id} className="flex items-center gap-3">
-                  <label className="text-sm text-white/70 shrink-0 w-36">
-                    Subtitle Line {index + 1}:
+                <div key={line.id} className="flex items-center gap-2">
+                  <label className="text-sm text-white/60 shrink-0 w-32">
+                    Line {index + 1}:
                   </label>
                   <Input
                     type="text"
@@ -190,7 +190,7 @@ export function GenerationForm() {
                     size="icon"
                     onClick={() => removeSubtitleLine(line.id)}
                     disabled={isLoading || subtitleLines.length === 1}
-                    className="shrink-0 glass-button text-white border-white/20 hover:border-white/40"
+                    className="shrink-0 glass-button text-white/80 hover:text-white"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -202,7 +202,7 @@ export function GenerationForm() {
               variant="outline"
               onClick={addSubtitleLine}
               disabled={isLoading}
-              className="w-full glass-button text-white border-white/20 hover:border-white/40"
+              className="w-full glass-button text-white/80 hover:text-white"
             >
               + Add Subtitle Line
             </Button>
@@ -211,7 +211,8 @@ export function GenerationForm() {
           <Button 
             type="submit" 
             disabled={isLoading || !isFormValid}
-            className="w-full glass-button text-white border-white/20 hover:border-white/40 hover:bg-accent-red/20 disabled:opacity-50 disabled:cursor-not-allowed text-base py-6"
+            className="w-full py-3 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ backgroundColor: isLoading || !isFormValid ? '#0047AB80' : '#0047AB' }}
           >
             {isLoading ? "Generating..." : "Generate Localized Content"}
           </Button>

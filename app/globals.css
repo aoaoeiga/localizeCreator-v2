@@ -2,11 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
 
 @layer base {
   :root {
-    --background: 15 20 25; /* #0f1419 - 深い紺 */
+    --background: 10 10 10; /* #0a0a0a - 黒 */
     --foreground: 0 0% 100%; /* 白 */
     --card: 15 20 25;
     --card-foreground: 0 0% 100%;
@@ -14,23 +14,22 @@
     --popover-foreground: 0 0% 100%;
     --primary: 210 100% 34%; /* #0047AB - 紺碧 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 320 30% 12%; /* #2C1821 - 黒紅 */
+    --secondary: 0 0% 20%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 20%;
+    --muted: 0 0% 15%;
     --muted-foreground: 0 0% 70%;
     --accent: 0 100% 45%; /* #E60012 - 朱 */
     --accent-foreground: 0 0% 100%;
-    --accent-purple: 240 20% 65%; /* #9B9FBB - 薄紫 */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 30%;
-    --input: 0 0% 20%;
+    --border: 0 0% 25%;
+    --input: 0 0% 15%;
     --ring: 210 100% 40%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 10 10 10; /* #0a0a0a - 黒 */
+    --background: 10 10 10;
     --foreground: 0 0% 100%;
     --card: 15 20 25;
     --card-foreground: 0 0% 100%;
@@ -38,17 +37,16 @@
     --popover-foreground: 0 0% 100%;
     --primary: 210 100% 34%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 320 30% 12%;
+    --secondary: 0 0% 20%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 20%;
+    --muted: 0 0% 15%;
     --muted-foreground: 0 0% 70%;
     --accent: 0 100% 45%;
     --accent-foreground: 0 0% 100%;
-    --accent-purple: 240 20% 65%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 30%;
-    --input: 0 0% 20%;
+    --border: 0 0% 25%;
+    --input: 0 0% 15%;
     --ring: 210 100% 40%;
   }
 }
@@ -58,199 +56,41 @@
     @apply border-border;
   }
   body {
-    @apply bg-[#0f1419] text-white font-sans;
+    @apply bg-[#0a0a0a] text-white;
     font-family: 'Noto Sans JP', sans-serif;
-    background-image: 
-      /* 麻の葉文様（subtle） */
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0, 71, 171, 0.03) 2px,
-        rgba(0, 71, 171, 0.03) 4px
-      ),
-      repeating-linear-gradient(
-        60deg,
-        transparent,
-        transparent 2px,
-        rgba(0, 71, 171, 0.03) 2px,
-        rgba(0, 71, 171, 0.03) 4px
-      ),
-      repeating-linear-gradient(
-        120deg,
-        transparent,
-        transparent 2px,
-        rgba(0, 71, 171, 0.03) 2px,
-        rgba(0, 71, 171, 0.03) 4px
-      ),
-      /* 市松模様（subtle） */
-      repeating-linear-gradient(
-        0deg,
-        rgba(230, 0, 18, 0.02) 0px,
-        rgba(230, 0, 18, 0.02) 20px,
-        transparent 20px,
-        transparent 40px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        rgba(230, 0, 18, 0.02) 0px,
-        rgba(230, 0, 18, 0.02) 20px,
-        transparent 20px,
-        transparent 40px
-      ),
-      /* 波パターン（subtle） */
-      radial-gradient(circle at 20% 50%, rgba(0, 71, 171, 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(230, 0, 18, 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 50% 20%, rgba(155, 159, 187, 0.03) 0%, transparent 50%);
-    background-attachment: fixed;
-    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
   }
 }
 
-/* ガラスモーフィズム + 和紙のような質感 */
+/* シンプルなガラスモーフィズム（最小限） */
 @layer utilities {
-  .glass {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-  }
-  
-  .glass-hover {
-    transition: all 0.3s ease;
-  }
-  
-  .glass-hover:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
-  }
-  
   .glass-card {
-    background: rgba(15, 20, 25, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(15, 20, 25, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 
-      0 8px 32px 0 rgba(0, 0, 0, 0.37),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    /* 和紙のような質感 */
-    background-image: 
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 1px,
-        rgba(255, 255, 255, 0.01) 1px,
-        rgba(255, 255, 255, 0.01) 2px
-      );
   }
   
   .glass-button {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
   }
   
   .glass-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.25);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
   }
   
   .glass-input {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
   }
   
   .glass-input:focus {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(0, 71, 171, 0.5);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.1);
-  }
-  
-  /* 日本の伝統色 */
-  .color-konpeki {
-    color: #0047AB; /* 紺碧 */
-  }
-  
-  .color-kurobeni {
-    color: #2C1821; /* 黒紅 */
-    background-color: #2C1821;
-  }
-  
-  .color-shu {
-    color: #E60012; /* 朱 */
-  }
-  
-  .color-usumurasaki {
-    color: #9B9FBB; /* 薄紫 */
-  }
-  
-  /* 金箔効果（glowing text） */
-  .gold-glow {
-    text-shadow: 
-      0 0 10px rgba(255, 215, 0, 0.5),
-      0 0 20px rgba(255, 215, 0, 0.3),
-      0 0 30px rgba(255, 215, 0, 0.2);
-    color: #FFD700;
-  }
-  
-  .gold-glow-subtle {
-    text-shadow: 
-      0 0 5px rgba(255, 215, 0, 0.3),
-      0 0 10px rgba(255, 215, 0, 0.2);
-    color: #FFD700;
-  }
-  
-  /* 縦書きヒント */
-  .vertical-hint {
-    writing-mode: vertical-rl;
-    text-orientation: upright;
-    letter-spacing: 0.1em;
-  }
-  
-  /* 日本的レイアウト */
-  .japanese-layout {
-    direction: ltr;
-    text-align: left;
-  }
-  
-  /* アクセントカラー */
-  .accent-konpeki {
-    color: #0047AB;
-  }
-  
-  .accent-shu {
-    color: #E60012;
-  }
-  
-  .accent-usumurasaki {
-    color: #9B9FBB;
-  }
-  
-  .bg-konpeki {
-    background-color: #0047AB;
-  }
-  
-  .bg-shu {
-    background-color: #E60012;
-  }
-  
-  .bg-usumurasaki {
-    background-color: #9B9FBB;
-  }
-  
-  .border-konpeki {
+    background: rgba(255, 255, 255, 0.05);
     border-color: #0047AB;
-  }
-  
-  .border-shu {
-    border-color: #E60012;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 71, 171, 0.2);
   }
 }

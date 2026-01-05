@@ -14,27 +14,27 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0f1419]">
-      <header className="glass border-b border-white/10">
-        <div className="container mx-auto px-4 py-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 900 }} suppressHydrationWarning>LocalizeCreator</h1>
-          <nav className="flex items-center gap-6">
+    <div className="min-h-screen flex flex-col bg-[#0a0a0a]">
+      <header className="border-b border-white/10">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-white" suppressHydrationWarning>LocalizeCreator</h1>
+          <nav className="flex items-center gap-4">
             {!isMounted || status === "loading" ? (
-              <div className="h-10 w-24 glass animate-pulse rounded-lg"></div>
+              <div className="h-9 w-20 bg-white/5 animate-pulse rounded"></div>
             ) : session ? (
               <>
                 <Link
                   href="/dashboard"
-                  className="px-4 py-2 glass-button rounded-lg text-white hover:text-accent-red transition-colors"
+                  className="px-4 py-2 text-white/80 hover:text-white text-sm transition-colors"
                 >
                   Dashboard
                 </Link>
-                <span className="text-sm text-white/80">
-                  Hello, {session?.user?.name || session?.user?.email || "User"}
+                <span className="text-sm text-white/60">
+                  {session?.user?.name || session?.user?.email || "User"}
                 </span>
                 <button
                   onClick={() => signOut()}
-                  className="px-4 py-2 glass-button rounded-lg text-white hover:text-accent-red transition-colors"
+                  className="px-4 py-2 text-white/80 hover:text-white text-sm transition-colors"
                 >
                   Sign Out
                 </button>
@@ -42,7 +42,8 @@ export default function Home() {
             ) : (
               <Link
                 href="/auth/signin"
-                className="px-4 py-2 glass-button rounded-lg text-white hover:text-accent-red transition-colors"
+                className="px-4 py-2 rounded text-white text-sm transition-colors"
+                style={{ backgroundColor: '#0047AB' }}
               >
                 Sign In
               </Link>
@@ -51,17 +52,13 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto px-4 py-12">
+      <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto space-y-12">
-          <div className="text-center space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-6xl font-bold text-white font-['Noto_Sans_JP'] gold-glow-subtle" style={{ fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 900 }} suppressHydrationWarning>
-                LocalizeCreator
-              </h1>
-              <p className="text-xl text-white/80 leading-relaxed font-['Noto_Sans_JP']" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>
-                Automatically translate and adapt your content for the Japanese market
-              </p>
-            </div>
+          <div className="text-center space-y-4">
+            <h1 className="text-5xl font-bold text-white">LocalizeCreator</h1>
+            <p className="text-lg text-white/70">
+              Automatically translate and adapt your content for the Japanese market
+            </p>
           </div>
 
           {!isMounted || status === "loading" ? (
@@ -70,12 +67,13 @@ export default function Home() {
             </div>
           ) : !session ? (
             <div className="text-center space-y-6">
-              <p className="text-lg text-white/80">Please sign in to get started</p>
+              <p className="text-base text-white/80">Please sign in to get started</p>
               <Link
                 href="/auth/signin"
-                className="inline-block px-8 py-3 glass-button rounded-lg text-white hover:text-accent-red transition-colors"
+                className="inline-block px-8 py-3 rounded-lg text-white font-medium transition-colors"
+                style={{ backgroundColor: '#0047AB' }}
               >
-                Sign In with GitHub
+                Sign In with Google
               </Link>
             </div>
           ) : (
