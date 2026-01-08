@@ -172,37 +172,43 @@ export function GenerationForm() {
             <label className="text-sm font-medium text-white">
               Subtitles
             </label>
-            <div className="flex gap-2 mb-3">
-              <button
-                type="button"
-                onClick={() => setDialect("standard")}
-                disabled={isLoading}
-                className={`px-4 py-2 rounded text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
-                  dialect === "standard"
-                    ? "text-white"
-                    : "text-white/60 hover:text-white/80"
-                }`}
-                style={{
-                  backgroundColor: dialect === "standard" ? "#0047AB" : "rgba(255, 255, 255, 0.05)",
-                }}
-              >
-                Standard Japanese
-              </button>
-              <button
-                type="button"
-                onClick={() => setDialect("kansai")}
-                disabled={isLoading}
-                className={`px-4 py-2 rounded text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
-                  dialect === "kansai"
-                    ? "text-white"
-                    : "text-white/60 hover:text-white/80"
-                }`}
-                style={{
-                  backgroundColor: dialect === "kansai" ? "#0047AB" : "rgba(255, 255, 255, 0.05)",
-                }}
-              >
-                関西弁
-              </button>
+            <div className="space-y-2 mb-3">
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setDialect("standard")}
+                  disabled={isLoading}
+                  className={`px-4 py-2 rounded text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                    dialect === "standard"
+                      ? "text-white"
+                      : "text-white/60 hover:text-white/80"
+                  }`}
+                  style={{
+                    backgroundColor: dialect === "standard" ? "#0047AB" : "rgba(255, 255, 255, 0.05)",
+                  }}
+                >
+                  Standard Japanese
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDialect("kansai")}
+                  disabled={isLoading}
+                  className={`px-4 py-2 rounded text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                    dialect === "kansai"
+                      ? "text-white"
+                      : "text-white/60 hover:text-white/80"
+                  }`}
+                  style={{
+                    backgroundColor: dialect === "kansai" ? "#0047AB" : "rgba(255, 255, 255, 0.05)",
+                  }}
+                >
+                  関西弁
+                </button>
+              </div>
+              <div className="flex gap-2 text-xs text-white/50">
+                <span className="flex-1">Standard, polite Japanese</span>
+                <span className="flex-1">Casual, friendly Kansai style</span>
+              </div>
             </div>
             <div className="space-y-2">
               {subtitleLines.map((line, index) => (
