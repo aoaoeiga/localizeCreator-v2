@@ -154,22 +154,6 @@ export function GenerationForm() {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="dialect" className="text-sm font-medium text-white">
-              Language Dialect
-            </label>
-            <select
-              id="dialect"
-              value={dialect}
-              onChange={(e) => setDialect(e.target.value)}
-              disabled={isLoading}
-              className="flex h-10 w-full rounded glass-input px-3 py-2 text-sm text-white bg-[#0a0a0a] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="standard" className="bg-[#0a0a0a]">Standard Japanese</option>
-              <option value="kansai" className="bg-[#0a0a0a]">Kansai Dialect</option>
-            </select>
-          </div>
-
-          <div className="space-y-2">
             <label htmlFor="video-url" className="text-sm font-medium text-white">
               Video URL
             </label>
@@ -188,6 +172,38 @@ export function GenerationForm() {
             <label className="text-sm font-medium text-white">
               Subtitles
             </label>
+            <div className="flex gap-2 mb-3">
+              <button
+                type="button"
+                onClick={() => setDialect("standard")}
+                disabled={isLoading}
+                className={`px-4 py-2 rounded text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                  dialect === "standard"
+                    ? "text-white"
+                    : "text-white/60 hover:text-white/80"
+                }`}
+                style={{
+                  backgroundColor: dialect === "standard" ? "#0047AB" : "rgba(255, 255, 255, 0.05)",
+                }}
+              >
+                Standard Japanese
+              </button>
+              <button
+                type="button"
+                onClick={() => setDialect("kansai")}
+                disabled={isLoading}
+                className={`px-4 py-2 rounded text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                  dialect === "kansai"
+                    ? "text-white"
+                    : "text-white/60 hover:text-white/80"
+                }`}
+                style={{
+                  backgroundColor: dialect === "kansai" ? "#0047AB" : "rgba(255, 255, 255, 0.05)",
+                }}
+              >
+                関西弁
+              </button>
+            </div>
             <div className="space-y-2">
               {subtitleLines.map((line, index) => (
                 <div key={line.id} className="flex items-center gap-2">
