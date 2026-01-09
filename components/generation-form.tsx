@@ -173,12 +173,12 @@ export function GenerationForm() {
               Subtitles
             </label>
             <div className="space-y-2 mb-3">
-              <div className="flex gap-2 items-start">
+              <div className="flex w-full gap-2 items-start">
                 <button
                   type="button"
                   onClick={() => setDialect("standard")}
                   disabled={isLoading}
-                  className={`px-4 py-2 rounded text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                  className={`flex-1 px-4 py-2 rounded text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
                     dialect === "standard"
                       ? "text-white"
                       : "text-white/60 hover:text-white/80"
