@@ -202,12 +202,12 @@ export function GenerationForm() {
                     backgroundColor: dialect === "kansai" ? "#0047AB" : "rgba(255, 255, 255, 0.05)",
                   }}
                 >
-                  関西弁
+                  Kansai Dialect
                 </button>
               </div>
-              <div className="flex gap-2 text-xs text-white/50">
-                <span className="flex-1">Standard, polite Japanese</span>
-                <span className="flex-1">Casual, friendly Kansai style</span>
+              <div className="flex gap-2">
+                <span className="flex-1"></span>
+                <span className="flex-1 text-xs text-white/50">Casual, friendly language</span>
               </div>
             </div>
             <div className="space-y-2">
