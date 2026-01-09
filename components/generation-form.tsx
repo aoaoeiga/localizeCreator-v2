@@ -173,7 +173,7 @@ export function GenerationForm() {
               Subtitles
             </label>
             <div className="space-y-2 mb-3">
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-start">
                 <button
                   type="button"
                   onClick={() => setDialect("standard")}
@@ -189,25 +189,26 @@ export function GenerationForm() {
                 >
                   Standard Japanese
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setDialect("kansai")}
-                  disabled={isLoading}
-                  className={`px-4 py-2 rounded text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
-                    dialect === "kansai"
-                      ? "text-white"
-                      : "text-white/60 hover:text-white/80"
-                  }`}
-                  style={{
-                    backgroundColor: dialect === "kansai" ? "#0047AB" : "rgba(255, 255, 255, 0.05)",
-                  }}
-                >
-                  Kansai Dialect
-                </button>
-              </div>
-              <div className="flex gap-2">
-                <span className="flex-1"></span>
-                <span className="flex-1 text-xs text-white/50">Casual, friendly language</span>
+                <div className="flex-1">
+                  <button
+                    type="button"
+                    onClick={() => setDialect("kansai")}
+                    disabled={isLoading}
+                    className={`w-full px-4 py-2 rounded text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                      dialect === "kansai"
+                        ? "text-white"
+                        : "text-white/60 hover:text-white/80"
+                    }`}
+                    style={{
+                      backgroundColor: dialect === "kansai" ? "#0047AB" : "rgba(255, 255, 255, 0.05)",
+                    }}
+                  >
+                    Kansai Dialect
+                  </button>
+                  <div className="text-xs text-white/50 mt-1 text-center">
+                    casual, friendly language
+                  </div>
+                </div>
               </div>
             </div>
             <div className="space-y-2">
